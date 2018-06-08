@@ -1,0 +1,10 @@
+D:\Gorjan\Documents\Programiranje\fakultet\VP\Multitask\Multitask\Multitask\bin\Debug\Multitask.exe.config
+D:\Gorjan\Documents\Programiranje\fakultet\VP\Multitask\Multitask\Multitask\bin\Debug\Multitask.exe
+D:\Gorjan\Documents\Programiranje\fakultet\VP\Multitask\Multitask\Multitask\bin\Debug\Multitask.pdb
+D:\Gorjan\Documents\Programiranje\fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.csprojResolveAssemblyReference.cache
+D:\Gorjan\Documents\Programiranje\fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.gameForm.resources
+D:\Gorjan\Documents\Programiranje\fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.Properties.Resources.resources
+D:\Gorjan\Documents\Programiranje\fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.csproj.GenerateResource.cache
+D:\Gorjan\Documents\Programiranje\fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.csproj.CoreCompileInputs.cache
+D:\Gorjan\Documents\Programiranje\fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.exe
+D:\Gorjan\Documents\Programiranje\fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.pdb
