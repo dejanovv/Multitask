@@ -109,10 +109,51 @@ namespace Multitask
         public void btnStartGame_click(object sennder, EventArgs e)
         {
             this.disposeForm();
-            this.Size = sizes[resIdx];
-
+            //size should change after choosing the difficulty level
+           // this.Size = sizes[resIdx];
+            this.loadDifficultyScreen();
 
             this.CenterToScreen();
+            Invalidate(true);
+        }
+
+
+        public void loadDifficultyScreen()
+        {
+            Label lblTitle = new Label();
+            lblTitle.Text = "Choose difficulty:";
+            lblTitle.Location = new Point(60, 10);
+            lblTitle.Font = new Font("Times New Roman", 10, FontStyle.Bold);
+
+            Button btnBeginner, btnIntermediate, btnExpert, btnInsane;
+
+            btnBeginner = new Button();
+            btnIntermediate = new Button();
+            btnExpert = new Button();
+            btnInsane = new Button();
+
+            // add event handlers to buttons
+            btnBeginner.Location = new Point(55, 40);
+            btnBeginner.Size = new Size(75, 25);
+            btnBeginner.Text = "Beginner";
+
+            btnIntermediate.Location = new Point(55, 90);
+            btnIntermediate.Size = new Size(75, 25);
+            btnIntermediate.Text = "Intermediate";
+
+            btnExpert.Location = new Point(55, 140);
+            btnExpert.Size = new Size(75, 25);
+            btnExpert.Text = "Expert";
+
+            btnInsane.Location = new Point(55, 190);
+            btnInsane.Size = new Size(75, 25);
+            btnInsane.Text = "Insane";
+
+            this.Controls.Add(btnBeginner);
+            this.Controls.Add(btnIntermediate);
+            this.Controls.Add(btnExpert);
+            this.Controls.Add(btnInsane);
+
             Invalidate(true);
         }
     }

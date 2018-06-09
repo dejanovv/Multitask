@@ -8,3 +8,13 @@ D:\Gorjan\Documents\Programiranje\fakultet\VP\Multitask\Multitask\Multitask\obj\
 D:\Gorjan\Documents\Programiranje\fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.csproj.CoreCompileInputs.cache
 D:\Gorjan\Documents\Programiranje\fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.exe
 D:\Gorjan\Documents\Programiranje\fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.pdb
+E:\FINKI\Multitask\Multitask\Multitask\bin\Debug\Multitask.exe.config
+E:\FINKI\Multitask\Multitask\Multitask\bin\Debug\Multitask.exe
+E:\FINKI\Multitask\Multitask\Multitask\bin\Debug\Multitask.pdb
+E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.csprojResolveAssemblyReference.cache
+E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.gameForm.resources
+E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.Properties.Resources.resources
+E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.csproj.GenerateResource.cache
+E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.csproj.CoreCompileInputs.cache
+E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.exe
+E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.pdb
