@@ -47,6 +47,7 @@ namespace Multitask
             btnHowTo.Location = new Point(55, 90);
             btnHowTo.Size = new Size(75, 25);
             btnHowTo.Text = "How To Play";
+            btnHowTo.Click += btnHowTo_click;
 
             btnLeaderboard.Location = new Point(55, 140);
             btnLeaderboard.Size = new Size(75, 25);
@@ -155,6 +156,29 @@ namespace Multitask
             this.Controls.Add(btnInsane);
 
             Invalidate(true);
+        }
+        public void btnHowTo_click(object sender, EventArgs e)
+        {
+            this.disposeForm();
+            this.howToPlayScreen();
+
+            this.CenterToScreen();
+            Invalidate(true);
+        }
+        public void howToPlayScreen()
+        {
+            Label lblTitle = new Label();
+            lblTitle.Text = "How To Play";
+            lblTitle.Location = new Point(30, 10);
+
+
+            Label lblHowTo = new Label();
+            lblHowTo.Size = new Size(150, 300);
+            lblHowTo.Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pulvinar blandit gravida. Vivamus imperdiet eros odio, vitae ultricies dui efficitur vitae. Phasellus in ex lacus. Nunc rutrum hendrerit arcu ut euismod. Suspendisse non nibh tellus. In a quam viverra, vulputate lectus id, aliquet odio. Ut laoreet dignissim eleifend. Nunc vulputate justo et nisi elementum tristique. In tempus lacinia ex, pellentesque volutpat nisl maximus sit amet.";          
+            lblHowTo.Location = new  Point(10, 30);
+            this.Controls.Add(lblTitle);
+            this.Controls.Add(lblHowTo);
+
         }
     }
 }
