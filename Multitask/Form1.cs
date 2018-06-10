@@ -231,27 +231,48 @@ namespace Multitask
             btnLoadLeaderboardInsane.Location = new Point(220, 10);
             btnLoadLeaderboardInsane.Click += btnLoadLeaderboardInsane_click;
 
-            this.Controls.Add(btnLoadLeaderboardEasy);
-            this.Controls.Add(btnLoadLeaderboardIntermediate);
-            this.Controls.Add(btnLoadLeaderboardExpert);
-            this.Controls.Add(btnLoadLeaderboardInsane);
+
+            Button btnClearLeaderboard = new Button();
+            btnClearLeaderboard.Text = "Clear Leaderboard";
+            btnClearLeaderboard.Location = new Point(100, 200);
+            btnClearLeaderboard.Width = 120;
+            btnClearLeaderboard.Click += btnClearLeaderboard_click;
 
             Label lblScores = new Label();
-            lblScores.Text = "";            
+            lblScores.Text = "";
             lblScores.Location = new Point(10, 40);
-            lblScores.Size = new Size(200, 200);
-           
+            lblScores.Size = new Size(200, 100);
 
             var scoresFormat = scores.Where(x => x != null).OrderByDescending(x => x.Item2)
                 .Select(x => x.Item1 + "                            " + x.Item2 + "\n").ToList();
-           
-            for (int i=1; i<=scoresFormat.Count; i++)
+
+            for (int i = 1; i <= scoresFormat.Count; i++)
             {
-                lblScores.Text =  lblScores.Text  + i + ". " + scoresFormat[i-1];
-               
+                lblScores.Text = lblScores.Text + i + ". " + scoresFormat[i - 1];
+
             }
 
+            this.Controls.Add(btnClearLeaderboard);
+            this.Controls.Add(btnLoadLeaderboardEasy);
+            this.Controls.Add(btnLoadLeaderboardIntermediate);
+            this.Controls.Add(btnLoadLeaderboardExpert);
+            this.Controls.Add(btnLoadLeaderboardInsane);         
             this.Controls.Add(lblScores);
+
+
+           
+            
         }
+        public void btnClearLeaderboard_click(object sender, EventArgs e)
+        {
+            scoresEasy = new Tuple<String, Int32>[10];
+            scoresIntermediate = new Tuple<String, Int32>[10];
+            scoresExpert = new Tuple<String, Int32>[10];
+            scoresInsane = new Tuple<String, Int32>[10];
+            this.disposeForm();
+            this.loadLeaderboard(scoresEasy);
+
+        }
+      
     }
 }
