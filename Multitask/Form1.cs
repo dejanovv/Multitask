@@ -14,10 +14,18 @@ namespace Multitask
     {
         static int resIdx = 0;
         static Size[] sizes = new Size[5] { new Size(800, 600), new Size(900, 675), new Size(1000, 750), new Size(1200, 900), new Size(1600, 1200) };
-
+        private static Tuple<String, Int32>[] scoresEasy = new Tuple<String, Int32>[10];
+        private static Tuple<String, Int32>[] scoresIntermediate = new Tuple<String, Int32>[10];
+        private static Tuple<String, Int32>[] scoresExpert = new Tuple<String, Int32>[10];
+        private static Tuple<String, Int32>[] scoresInsane = new Tuple<String, Int32>[10];
         public gameForm()
         {
             InitializeComponent();
+            //to delete
+            scoresEasy[0] = Tuple.Create("blah", 10);
+            scoresEasy[1] = Tuple.Create("meh", 220);
+            scoresIntermediate[0] = Tuple.Create("inter", 30);
+            scoresIntermediate[2] = Tuple.Create("innn", 40);
 
             this.DoubleBuffered = true;
             this.CenterToScreen();
@@ -52,6 +60,7 @@ namespace Multitask
             btnLeaderboard.Location = new Point(55, 140);
             btnLeaderboard.Size = new Size(75, 25);
             btnLeaderboard.Text = "Leaderboard";
+            btnLeaderboard.Click += btnLoadLeaderboardEasy_click;
 
             Label lblRes = new Label();
             lblRes.Text = "Window Size:";
@@ -179,6 +188,70 @@ namespace Multitask
             this.Controls.Add(lblTitle);
             this.Controls.Add(lblHowTo);
 
+        }
+        public void btnLoadLeaderboardEasy_click(object sender, EventArgs e)
+        {
+            this.loadLeaderboard(scoresEasy);
+        }
+        public void btnLoadLeaderboardIntermediate_click(object sender, EventArgs e)
+        {
+            this.loadLeaderboard(scoresIntermediate);
+        }
+        public void btnLoadLeaderboardExpert_click(object sender, EventArgs e)
+        {
+            this.loadLeaderboard(scoresExpert);
+        }
+        public void btnLoadLeaderboardInsane_click(object sender, EventArgs e)
+        {
+            this.loadLeaderboard(scoresInsane);
+        }
+        public void loadLeaderboard(Tuple<String, Int32>[] scores)
+        {
+            this.disposeForm();
+            this.Size = new Size(320, 300);
+            Button btnLoadLeaderboardEasy, btnLoadLeaderboardIntermediate, btnLoadLeaderboardExpert, btnLoadLeaderboardInsane;
+
+            btnLoadLeaderboardEasy = new Button();
+            btnLoadLeaderboardEasy.Text = "Easy";
+            btnLoadLeaderboardEasy.Location = new Point(10, 10);
+            btnLoadLeaderboardEasy.Click += btnLoadLeaderboardEasy_click;
+
+            btnLoadLeaderboardIntermediate = new Button();
+            btnLoadLeaderboardIntermediate.Text = "Intermediate";
+            btnLoadLeaderboardIntermediate.Location = new Point(80, 10);
+            btnLoadLeaderboardIntermediate.Click += btnLoadLeaderboardIntermediate_click;
+
+            btnLoadLeaderboardExpert = new Button();
+            btnLoadLeaderboardExpert.Text = "Expert";
+            btnLoadLeaderboardExpert.Location = new Point(150, 10);
+            btnLoadLeaderboardExpert.Click += btnLoadLeaderboardExpert_click;
+
+            btnLoadLeaderboardInsane = new Button();
+            btnLoadLeaderboardInsane.Text = "Insane";
+            btnLoadLeaderboardInsane.Location = new Point(220, 10);
+            btnLoadLeaderboardInsane.Click += btnLoadLeaderboardInsane_click;
+
+            this.Controls.Add(btnLoadLeaderboardEasy);
+            this.Controls.Add(btnLoadLeaderboardIntermediate);
+            this.Controls.Add(btnLoadLeaderboardExpert);
+            this.Controls.Add(btnLoadLeaderboardInsane);
+
+            Label lblScores = new Label();
+            lblScores.Text = "";            
+            lblScores.Location = new Point(10, 40);
+            lblScores.Size = new Size(200, 200);
+           
+
+            var scoresFormat = scores.Where(x => x != null).OrderByDescending(x => x.Item2)
+                .Select(x => x.Item1 + "                            " + x.Item2 + "\n").ToList();
+           
+            for (int i=1; i<=scoresFormat.Count; i++)
+            {
+                lblScores.Text =  lblScores.Text  + i + ". " + scoresFormat[i-1];
+               
+            }
+
+            this.Controls.Add(lblScores);
         }
     }
 }
