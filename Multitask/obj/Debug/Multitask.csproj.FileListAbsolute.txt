@@ -18,3 +18,13 @@ E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.csproj.GenerateResour
 E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.csproj.CoreCompileInputs.cache
 E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.exe
 E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.pdb
+D:\Programiranje\Fakultet\VP\Multitask\Multitask\Multitask\bin\Debug\Multitask.exe.config
+D:\Programiranje\Fakultet\VP\Multitask\Multitask\Multitask\bin\Debug\Multitask.exe
+D:\Programiranje\Fakultet\VP\Multitask\Multitask\Multitask\bin\Debug\Multitask.pdb
+D:\Programiranje\Fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.csprojAssemblyReference.cache
+D:\Programiranje\Fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.gameForm.resources
+D:\Programiranje\Fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.Properties.Resources.resources
+D:\Programiranje\Fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.csproj.GenerateResource.cache
+D:\Programiranje\Fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.csproj.CoreCompileInputs.cache
+D:\Programiranje\Fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.exe
+D:\Programiranje\Fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.pdb

@@ -12,12 +12,24 @@ namespace Multitask
 {
     public partial class gameForm : Form
     {
-        static int resIdx = 0;
-        static Size[] sizes = new Size[5] { new Size(800, 600), new Size(900, 675), new Size(1000, 750), new Size(1200, 900), new Size(1600, 1200) };
+        /* -------------------STATICS------------------- */
+
+        // 1 tick = 100 ms
+        public static int timeTicks = 0;
+
+        // score lists - serialize these when leaderboard is finished
         private static Tuple<String, Int32>[] scoresEasy = new Tuple<String, Int32>[10];
         private static Tuple<String, Int32>[] scoresIntermediate = new Tuple<String, Int32>[10];
         private static Tuple<String, Int32>[] scoresExpert = new Tuple<String, Int32>[10];
         private static Tuple<String, Int32>[] scoresInsane = new Tuple<String, Int32>[10];
+
+        // resolution
+        static int resIdx = 0;
+        static Size[] sizes = new Size[5] { new Size(800, 600), new Size(900, 675), new Size(1000, 750), new Size(1200, 900), new Size(1600, 1200) };
+
+        /* -------------------END-STATICS------------------- */
+
+
         public gameForm()
         {
             InitializeComponent();
@@ -33,6 +45,7 @@ namespace Multitask
             this.loadStartScreen();
         }
 
+        /* -------------------SCREEN LOADERS------------------- */
         public void loadStartScreen()
         {
             Label lblTitle = new Label();
@@ -55,12 +68,10 @@ namespace Multitask
             btnHowTo.Location = new Point(55, 90);
             btnHowTo.Size = new Size(75, 25);
             btnHowTo.Text = "How To Play";
-            btnHowTo.Click += btnHowTo_click;
 
             btnLeaderboard.Location = new Point(55, 140);
             btnLeaderboard.Size = new Size(75, 25);
             btnLeaderboard.Text = "Leaderboard";
-            btnLeaderboard.Click += btnLoadLeaderboardEasy_click;
 
             Label lblRes = new Label();
             lblRes.Text = "Window Size:";
@@ -78,7 +89,7 @@ namespace Multitask
             cbRes.SelectedIndexChanged += changeResolution;
 
             Label lblScreenRes = new Label();
-            lblScreenRes.Location = new Point(35    , 220);
+            lblScreenRes.Location = new Point(35, 220);
             lblScreenRes.Size = new Size(200, 50);
             lblScreenRes.Text = "(" + "screen res: " + Screen.PrimaryScreen.WorkingArea.Width.ToString() + "x" + Screen.PrimaryScreen.WorkingArea.Height.ToString() + ")";
 
@@ -90,50 +101,17 @@ namespace Multitask
             this.Controls.Add(cbRes);
             this.Controls.Add(lblScreenRes);
 
-            Invalidate(true);
-        }
-        
-        public void loadGameScreen()
-        {
-
-        }
-
-        public void disposeForm()
-        {
-            this.Controls.Clear();
-        }
-
-
-        public void setFormParams()
-        {
-            this.DoubleBuffered = true;
-
-        }
-
-        // event handlers
-        public void changeResolution(object sender, EventArgs e)
-        {
-            resIdx = ((ComboBox)sender).SelectedIndex;
-        }
-
-        public void btnStartGame_click(object sennder, EventArgs e)
-        {
-            this.disposeForm();
-            //size should change after choosing the difficulty level
-           // this.Size = sizes[resIdx];
-            this.loadDifficultyScreen();
-
             this.CenterToScreen();
-            Invalidate(true);
+            this.Invalidate(true);
         }
-
 
         public void loadDifficultyScreen()
         {
             Label lblTitle = new Label();
             lblTitle.Text = "Choose difficulty:";
-            lblTitle.Location = new Point(60, 10);
+            lblTitle.Location = new Point(30, 10);
             lblTitle.Font = new Font("Times New Roman", 10, FontStyle.Bold);
+            lblTitle.Size = new Size(200, 25);
 
             Button btnBeginner, btnIntermediate, btnExpert, btnInsane;
 
@@ -142,69 +120,36 @@ namespace Multitask
             btnExpert = new Button();
             btnInsane = new Button();
 
-            // add event handlers to buttons
             btnBeginner.Location = new Point(55, 40);
             btnBeginner.Size = new Size(75, 25);
             btnBeginner.Text = "Beginner";
+            btnBeginner.Click += btnBeginner_click;
 
             btnIntermediate.Location = new Point(55, 90);
             btnIntermediate.Size = new Size(75, 25);
             btnIntermediate.Text = "Intermediate";
+            btnIntermediate.Click += btnIntermediate_click;
 
             btnExpert.Location = new Point(55, 140);
             btnExpert.Size = new Size(75, 25);
             btnExpert.Text = "Expert";
+            btnExpert.Click += btnExpert_click;
 
             btnInsane.Location = new Point(55, 190);
             btnInsane.Size = new Size(75, 25);
             btnInsane.Text = "Insane";
+            btnInsane.Click += btnInsane_click;
 
+            this.Controls.Add(lblTitle);
             this.Controls.Add(btnBeginner);
             this.Controls.Add(btnIntermediate);
             this.Controls.Add(btnExpert);
             this.Controls.Add(btnInsane);
 
-            Invalidate(true);
-        }
-        public void btnHowTo_click(object sender, EventArgs e)
-        {
-            this.disposeForm();
-            this.howToPlayScreen();
-
             this.CenterToScreen();
-            Invalidate(true);
+            this.Invalidate(true);
         }
-        public void howToPlayScreen()
-        {
-            Label lblTitle = new Label();
-            lblTitle.Text = "How To Play";
-            lblTitle.Location = new Point(30, 10);
 
-
-            Label lblHowTo = new Label();
-            lblHowTo.Size = new Size(150, 300);
-            lblHowTo.Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pulvinar blandit gravida. Vivamus imperdiet eros odio, vitae ultricies dui efficitur vitae. Phasellus in ex lacus. Nunc rutrum hendrerit arcu ut euismod. Suspendisse non nibh tellus. In a quam viverra, vulputate lectus id, aliquet odio. Ut laoreet dignissim eleifend. Nunc vulputate justo et nisi elementum tristique. In tempus lacinia ex, pellentesque volutpat nisl maximus sit amet.";          
-            lblHowTo.Location = new  Point(10, 30);
-            this.Controls.Add(lblTitle);
-            this.Controls.Add(lblHowTo);
-
-        }
-        public void btnLoadLeaderboardEasy_click(object sender, EventArgs e)
-        {
-            this.loadLeaderboard(scoresEasy);
-        }
-        public void btnLoadLeaderboardIntermediate_click(object sender, EventArgs e)
-        {
-            this.loadLeaderboard(scoresIntermediate);
-        }
-        public void btnLoadLeaderboardExpert_click(object sender, EventArgs e)
-        {
-            this.loadLeaderboard(scoresExpert);
-        }
-        public void btnLoadLeaderboardInsane_click(object sender, EventArgs e)
-        {
-            this.loadLeaderboard(scoresInsane);
-        }
         public void loadLeaderboard(Tuple<String, Int32>[] scores)
         {
             this.disposeForm();
@@ -249,20 +194,133 @@ namespace Multitask
             for (int i = 1; i <= scoresFormat.Count; i++)
             {
                 lblScores.Text = lblScores.Text + i + ". " + scoresFormat[i - 1];
-
             }
 
             this.Controls.Add(btnClearLeaderboard);
             this.Controls.Add(btnLoadLeaderboardEasy);
             this.Controls.Add(btnLoadLeaderboardIntermediate);
             this.Controls.Add(btnLoadLeaderboardExpert);
-            this.Controls.Add(btnLoadLeaderboardInsane);         
+            this.Controls.Add(btnLoadLeaderboardInsane);
             this.Controls.Add(lblScores);
-
-
-           
-            
         }
+
+        public void loadHowToScreen()
+        {
+            Label lblTitle = new Label();
+            lblTitle.Text = "How To Play";
+            lblTitle.Location = new Point(30, 10);
+
+            Label lblHowTo = new Label();
+            lblHowTo.Size = new Size(150, 300);
+            lblHowTo.Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pulvinar blandit gravida. Vivamus imperdiet eros odio, vitae ultricies dui efficitur vitae. Phasellus in ex lacus. Nunc rutrum hendrerit arcu ut euismod. Suspendisse non nibh tellus. In a quam viverra, vulputate lectus id, aliquet odio. Ut laoreet dignissim eleifend. Nunc vulputate justo et nisi elementum tristique. In tempus lacinia ex, pellentesque volutpat nisl maximus sit amet.";
+            lblHowTo.Location = new Point(10, 30);
+            this.Controls.Add(lblTitle);
+            this.Controls.Add(lblHowTo);
+
+        }
+        public void loadGameScreen()
+        {
+            this.Size = sizes[resIdx];
+            StatusBar sbGame = new StatusBar();
+            StatusBarPanel lblTime, lblScore;
+            lblTime = new StatusBarPanel();
+            lblScore = new StatusBarPanel();
+
+            lblTime.Name = "lblTime";
+            lblTime.Text = lblTime.Name;
+
+            lblScore.Name = "lblScore";
+            lblScore.Text = "yy";
+
+            sbGame.Name = "sbGame";
+            sbGame.Panels.Add(lblTime);
+            sbGame.Panels.Add(lblScore);
+
+            sbGame.ShowPanels = true;
+            this.Controls.Add(sbGame);
+
+            Timer timerGame = new Timer();
+            timerGame.Interval = 100;
+            timerGame.Tick += timerGame_tick;
+
+
+            timerGame.Start();
+            this.CenterToScreen();
+            this.Invalidate(true);
+        }
+
+        /* -------------------END SCREEN LOADERS------------------- */
+
+
+        /* -------------------EVENT HANDLERS------------------- */
+
+        public void timerGame_tick(object sender, EventArgs e)
+        {
+            timeTicks++;
+            int[] time_data = new int[] { (timeTicks / 600) / 10 % 100, (timeTicks / 600) % 10, (timeTicks / 10) % 60 / 10 % 10, (timeTicks / 10) % 60 % 10 };
+
+            (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[0]) as StatusBarPanel).Text = String.Format("{0}{1}:{2}{3}", time_data.Select(x => x.ToString()).ToArray());
+            (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[1]) as StatusBarPanel).Text = String.Format("Score: {0}", ((Int32)timeTicks*10).ToString());
+        }     
+
+        public void btnStartGame_click(object sender, EventArgs e)
+        {
+            this.disposeForm();
+            this.loadDifficultyScreen();
+        }
+
+        public void btnBeginner_click(object sender, EventArgs e)
+        {
+            //todo: set difficulty parameters
+            this.disposeForm();
+            this.loadGameScreen();
+
+        }
+        public void btnIntermediate_click(object sender, EventArgs e)
+        {
+            //todo: set difficulty parameters
+            this.disposeForm();
+            this.loadGameScreen();
+        }
+        public void btnExpert_click(object sender, EventArgs e)
+        {
+            //todo: set difficulty parameters
+            this.disposeForm();
+            this.loadGameScreen();
+        }
+        public void btnInsane_click(object sender, EventArgs e)
+        {
+            //todo: set difficulty parameters
+            this.disposeForm();
+            this.loadGameScreen();
+        }
+
+        public void btnHowTo_click(object sender, EventArgs e)
+        {
+            this.disposeForm();
+            this.loadHowToScreen();
+
+            this.CenterToScreen();
+            Invalidate(true);
+        }
+    
+        public void btnLoadLeaderboardEasy_click(object sender, EventArgs e)
+        {
+            this.loadLeaderboard(scoresEasy);
+        }
+        public void btnLoadLeaderboardIntermediate_click(object sender, EventArgs e)
+        {
+            this.loadLeaderboard(scoresIntermediate);
+        }
+        public void btnLoadLeaderboardExpert_click(object sender, EventArgs e)
+        {
+            this.loadLeaderboard(scoresExpert);
+        }
+        public void btnLoadLeaderboardInsane_click(object sender, EventArgs e)
+        {
+            this.loadLeaderboard(scoresInsane);
+        }
+       
         public void btnClearLeaderboard_click(object sender, EventArgs e)
         {
             scoresEasy = new Tuple<String, Int32>[10];
@@ -273,6 +331,27 @@ namespace Multitask
             this.loadLeaderboard(scoresEasy);
 
         }
-      
+        /* -------------------END EVENT HANDLERS------------------- */
+
+
+
+        /* -------------------MISC (sea za sea)------------------- */
+        public void disposeForm()
+        {
+            this.Controls.Clear();
+        }
+
+
+        public void setFormParams()
+        {
+            this.DoubleBuffered = true;
+
+        }
+
+        public void changeResolution(object sender, EventArgs e)
+        {
+            resIdx = ((ComboBox)sender).SelectedIndex;
+        }
+        /* -------------------END MISC------------------- */
     }
 }
