@@ -68,10 +68,12 @@ namespace Multitask
             btnHowTo.Location = new Point(55, 90);
             btnHowTo.Size = new Size(75, 25);
             btnHowTo.Text = "How To Play";
+            btnHowTo.Click += btnHowTo_click;
 
             btnLeaderboard.Location = new Point(55, 140);
             btnLeaderboard.Size = new Size(75, 25);
             btnLeaderboard.Text = "Leaderboard";
+            btnLeaderboard.Click += btnLoadLeaderboardEasy_click;
 
             Label lblRes = new Label();
             lblRes.Text = "Window Size:";
