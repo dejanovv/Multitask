@@ -39,6 +39,7 @@
             this.Name = "gameForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "MultiTask";
+            this.Load += new System.EventHandler(this.gameForm_Load);
             this.ResumeLayout(false);
 
         }

@@ -13,7 +13,7 @@ namespace Multitask
     public partial class gameForm : Form
     {
         /* -------------------STATICS------------------- */
-
+        private static int currentLeaderboard = 1;
         // 1 tick = 100 ms
         public static int timeTicks = 0;
 
@@ -22,7 +22,8 @@ namespace Multitask
         private static Tuple<String, Int32>[] scoresIntermediate = new Tuple<String, Int32>[10];
         private static Tuple<String, Int32>[] scoresExpert = new Tuple<String, Int32>[10];
         private static Tuple<String, Int32>[] scoresInsane = new Tuple<String, Int32>[10];
-
+        
+        
         // resolution
         static int resIdx = 0;
         static Size[] sizes = new Size[5] { new Size(800, 600), new Size(900, 675), new Size(1000, 750), new Size(1200, 900), new Size(1600, 1200) };
@@ -152,11 +153,11 @@ namespace Multitask
             this.Invalidate(true);
         }
 
-        public void loadLeaderboard(Tuple<String, Int32>[] scores)
+        public void loadLeaderboard( Tuple<String, Int32>[] scores)
         {
             this.disposeForm();
-            this.Size = new Size(320, 300);
-            Button btnLoadLeaderboardEasy, btnLoadLeaderboardIntermediate, btnLoadLeaderboardExpert, btnLoadLeaderboardInsane;
+            this.Size = new Size(320, 400);
+            Button btnLoadLeaderboardEasy, btnLoadLeaderboardIntermediate, btnLoadLeaderboardExpert, btnLoadLeaderboardInsane, btnClearLeaderboards, btnClearLeaderboard;
 
             btnLoadLeaderboardEasy = new Button();
             btnLoadLeaderboardEasy.Text = "Easy";
@@ -179,31 +180,48 @@ namespace Multitask
             btnLoadLeaderboardInsane.Click += btnLoadLeaderboardInsane_click;
 
 
-            Button btnClearLeaderboard = new Button();
-            btnClearLeaderboard.Text = "Clear Leaderboard";
-            btnClearLeaderboard.Location = new Point(100, 200);
-            btnClearLeaderboard.Width = 120;
-            btnClearLeaderboard.Click += btnClearLeaderboard_click;
+            btnClearLeaderboards = new Button();
+            btnClearLeaderboards.Text = "Clear all leaderboards";
+            btnClearLeaderboards.Location = new Point(85, 200);
+            btnClearLeaderboards.Width = 150;
+            btnClearLeaderboards.Click += btnClearLeaderboards_click;
 
             Label lblScores = new Label();
             lblScores.Text = "";
             lblScores.Location = new Point(10, 40);
             lblScores.Size = new Size(200, 100);
 
-            var scoresFormat = scores.Where(x => x != null).OrderByDescending(x => x.Item2)
+            var scoresFormatted = scores.Where(x => x != null).OrderByDescending(x => x.Item2)
                 .Select(x => x.Item1 + "                            " + x.Item2 + "\n").ToList();
 
-            for (int i = 1; i <= scoresFormat.Count; i++)
+            if (scoresFormatted.Count == 0)
             {
-                lblScores.Text = lblScores.Text + i + ". " + scoresFormat[i - 1];
+             
+                lblScores.Text = "There aren't any scores yet.\nPlay the game and feel a sense of accomplishment by seeing your name on top of the leaderboard!";
+                lblScores.Location = new Point(50, 40);
+                lblScores.TextAlign = ContentAlignment.TopCenter;
+            }
+            else
+            {
+                for (int i = 1; i <= scoresFormatted.Count; i++)
+                {
+                    lblScores.Text = lblScores.Text + i + ". " + scoresFormatted[i - 1];
+                }
             }
 
-            this.Controls.Add(btnClearLeaderboard);
+            btnClearLeaderboard = new Button();
+            btnClearLeaderboard.Text = "Clear this leaderboard";
+            btnClearLeaderboard.Location = new Point(85, 230);
+            btnClearLeaderboard.Width = 150;
+            btnClearLeaderboard.Click += btnClearLeaderboard_click;
+
+            this.Controls.Add(btnClearLeaderboards);
             this.Controls.Add(btnLoadLeaderboardEasy);
             this.Controls.Add(btnLoadLeaderboardIntermediate);
             this.Controls.Add(btnLoadLeaderboardExpert);
             this.Controls.Add(btnLoadLeaderboardInsane);
             this.Controls.Add(lblScores);
+            this.Controls.Add(btnClearLeaderboard);
         }
 
         public void loadHowToScreen()
@@ -308,22 +326,26 @@ namespace Multitask
     
         public void btnLoadLeaderboardEasy_click(object sender, EventArgs e)
         {
+            currentLeaderboard = 1;
             this.loadLeaderboard(scoresEasy);
         }
         public void btnLoadLeaderboardIntermediate_click(object sender, EventArgs e)
         {
+            currentLeaderboard = 2;
             this.loadLeaderboard(scoresIntermediate);
         }
         public void btnLoadLeaderboardExpert_click(object sender, EventArgs e)
         {
+            currentLeaderboard = 3;
             this.loadLeaderboard(scoresExpert);
         }
         public void btnLoadLeaderboardInsane_click(object sender, EventArgs e)
         {
+            currentLeaderboard = 4;
             this.loadLeaderboard(scoresInsane);
         }
        
-        public void btnClearLeaderboard_click(object sender, EventArgs e)
+        public void btnClearLeaderboards_click(object sender, EventArgs e)
         {
             scoresEasy = new Tuple<String, Int32>[10];
             scoresIntermediate = new Tuple<String, Int32>[10];
@@ -332,6 +354,28 @@ namespace Multitask
             this.disposeForm();
             this.loadLeaderboard(scoresEasy);
 
+        }
+        public void btnClearLeaderboard_click(object sender, EventArgs e )
+        {
+           switch (currentLeaderboard)
+            {
+                case 1:
+                    scoresEasy = new Tuple<String, Int32>[10];
+                    this.loadLeaderboard(scoresEasy);
+                    break;
+                case 2:
+                    scoresIntermediate = new Tuple<String, Int32>[10];
+                    this.loadLeaderboard(scoresIntermediate);
+                    break;
+                case 3:
+                    scoresExpert = new Tuple<String, Int32>[10];
+                    this.loadLeaderboard(scoresExpert);
+                    break;
+                case 4:
+                    scoresInsane = new Tuple<String, Int32>[10];
+                    this.loadLeaderboard(scoresInsane);
+                    break;
+            }
         }
         /* -------------------END EVENT HANDLERS------------------- */
 
@@ -353,6 +397,11 @@ namespace Multitask
         public void changeResolution(object sender, EventArgs e)
         {
             resIdx = ((ComboBox)sender).SelectedIndex;
+        }
+
+        private void gameForm_Load(object sender, EventArgs e)
+        {
+
         }
         /* -------------------END MISC------------------- */
     }
