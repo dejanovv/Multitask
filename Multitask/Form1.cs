@@ -58,7 +58,7 @@ namespace Multitask
 
             btnStart = new Button();
             btnHowTo = new Button();
-            btnLeaderboard = new Button();
+            btnLeaderboard = new Button();          
 
             // add event handlers to buttons
             btnStart.Location = new Point(55, 40);
@@ -116,38 +116,47 @@ namespace Multitask
             lblTitle.Font = new Font("Times New Roman", 10, FontStyle.Bold);
             lblTitle.Size = new Size(200, 25);
 
-            Button btnBeginner, btnIntermediate, btnExpert, btnInsane;
+            Button btnBeginner, btnIntermediate, btnExpert, btnInsane, btnBack;
 
             btnBeginner = new Button();
             btnIntermediate = new Button();
             btnExpert = new Button();
             btnInsane = new Button();
+            btnBack = new Button();
 
             btnBeginner.Location = new Point(55, 40);
             btnBeginner.Size = new Size(75, 25);
             btnBeginner.Text = "Beginner";
             btnBeginner.Click += btnBeginner_click;
 
-            btnIntermediate.Location = new Point(55, 90);
+            btnIntermediate.Location = new Point(55, 80);
             btnIntermediate.Size = new Size(75, 25);
             btnIntermediate.Text = "Intermediate";
             btnIntermediate.Click += btnIntermediate_click;
 
-            btnExpert.Location = new Point(55, 140);
+            btnExpert.Location = new Point(55, 120);
             btnExpert.Size = new Size(75, 25);
             btnExpert.Text = "Expert";
             btnExpert.Click += btnExpert_click;
 
-            btnInsane.Location = new Point(55, 190);
+            btnInsane.Location = new Point(55, 160);
             btnInsane.Size = new Size(75, 25);
             btnInsane.Text = "Insane";
             btnInsane.Click += btnInsane_click;
+
+            btnBack.Location = new Point(55, 200);
+            btnBack.Size = new Size(75, 25);
+            btnBack.Text = "Main menu";
+            btnBack.Click += btnBack_click;
+
+
 
             this.Controls.Add(lblTitle);
             this.Controls.Add(btnBeginner);
             this.Controls.Add(btnIntermediate);
             this.Controls.Add(btnExpert);
             this.Controls.Add(btnInsane);
+            this.Controls.Add(btnBack);
 
             this.CenterToScreen();
             this.Invalidate(true);
@@ -157,7 +166,7 @@ namespace Multitask
         {
             this.disposeForm();
             this.Size = new Size(320, 400);
-            Button btnLoadLeaderboardEasy, btnLoadLeaderboardIntermediate, btnLoadLeaderboardExpert, btnLoadLeaderboardInsane, btnClearLeaderboards, btnClearLeaderboard;
+            Button btnLoadLeaderboardEasy, btnLoadLeaderboardIntermediate, btnLoadLeaderboardExpert, btnLoadLeaderboardInsane, btnClearLeaderboards, btnClearLeaderboard, btnBack;
 
             btnLoadLeaderboardEasy = new Button();
             btnLoadLeaderboardEasy.Text = "Easy";
@@ -215,6 +224,12 @@ namespace Multitask
             btnClearLeaderboard.Width = 150;
             btnClearLeaderboard.Click += btnClearLeaderboard_click;
 
+            btnBack = new Button();
+            btnBack.Location = new Point(85, 260);
+            btnBack.Width = 150;
+            btnBack.Text = "Main menu";
+            btnBack.Click += btnBack_click;
+
             this.Controls.Add(btnClearLeaderboards);
             this.Controls.Add(btnLoadLeaderboardEasy);
             this.Controls.Add(btnLoadLeaderboardIntermediate);
@@ -222,6 +237,7 @@ namespace Multitask
             this.Controls.Add(btnLoadLeaderboardInsane);
             this.Controls.Add(lblScores);
             this.Controls.Add(btnClearLeaderboard);
+            this.Controls.Add(btnBack);
         }
 
         public void loadHowToScreen()
@@ -231,11 +247,19 @@ namespace Multitask
             lblTitle.Location = new Point(30, 10);
 
             Label lblHowTo = new Label();
-            lblHowTo.Size = new Size(150, 300);
-            lblHowTo.Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pulvinar blandit gravida. Vivamus imperdiet eros odio, vitae ultricies dui efficitur vitae. Phasellus in ex lacus. Nunc rutrum hendrerit arcu ut euismod. Suspendisse non nibh tellus. In a quam viverra, vulputate lectus id, aliquet odio. Ut laoreet dignissim eleifend. Nunc vulputate justo et nisi elementum tristique. In tempus lacinia ex, pellentesque volutpat nisl maximus sit amet.";
+            lblHowTo.Size = new Size(150, 180);
+            lblHowTo.Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pulvinar blandit gravida. Vivamus imperdiet eros odio, vitae ultricies dui efficitur vitae. Phasellus in ex lacus. Nunc rutrum hendrerit arcu ut euismod. Suspendisse non nibh tellus. In a quam viverra, vulputate lectus id, aliquet odio. Ut laoreet dignissim eleifend.";
             lblHowTo.Location = new Point(10, 30);
+
+            Button btnBack = new Button();
+            btnBack.Location = new Point(55, 220);
+            btnBack.Size = new Size(75, 25);
+            btnBack.Text = "Main menu";
+            btnBack.Click += btnBack_click;
+
             this.Controls.Add(lblTitle);
             this.Controls.Add(lblHowTo);
+            this.Controls.Add(btnBack);
 
         }
         public void loadGameScreen()
@@ -282,6 +306,13 @@ namespace Multitask
             (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[0]) as StatusBarPanel).Text = String.Format("{0}{1}:{2}{3}", time_data.Select(x => x.ToString()).ToArray());
             (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[1]) as StatusBarPanel).Text = String.Format("Score: {0}", ((Int32)timeTicks*10).ToString());
         }     
+
+        public void btnBack_click(object sender, EventArgs e)
+        {
+            this.disposeForm();
+            this.Size = new Size(200, 300);
+            this.loadStartScreen();
+        }
 
         public void btnStartGame_click(object sender, EventArgs e)
         {
