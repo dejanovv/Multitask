@@ -271,10 +271,10 @@ namespace Multitask
             lblScore = new StatusBarPanel();
 
             lblTime.Name = "lblTime";
-            lblTime.Text = lblTime.Name;
+            lblTime.Text = "00:00";
 
             lblScore.Name = "lblScore";
-            lblScore.Text = "yy";
+            lblScore.Text = "0";
 
             sbGame.Name = "sbGame";
             sbGame.Panels.Add(lblTime);
@@ -283,10 +283,31 @@ namespace Multitask
             sbGame.ShowPanels = true;
             this.Controls.Add(sbGame);
 
+            GroupBox gbGame1 = new GroupBox();
+            gbGame1.Location = new Point(sizes[resIdx].Width/100-2, sizes[resIdx].Height/100 - 2);
+            gbGame1.Size = new Size(sizes[resIdx].Width*48/100, sizes[resIdx].Height*48/100);
+            gbGame1.Paint += gbGame1_Paint;
+            this.Controls.Add(gbGame1);
+
+            GroupBox gbGame2 = new GroupBox();
+            gbGame2.Location = new Point((sizes[resIdx].Width * 49 / 100) + 2, sizes[resIdx].Height / 100 - 2);
+            gbGame2.Size = new Size(sizes[resIdx].Width * 48 / 100, sizes[resIdx].Height * 48 / 100);
+            gbGame2.Paint += gbGame2_Paint;
+            this.Controls.Add(gbGame2);
+
+            GroupBox gbGame3 = new GroupBox();
+            gbGame3.Location = new Point(sizes[resIdx].Width / 100 - 2, (sizes[resIdx].Height * 48 / 100) + 6);
+            gbGame3.Size = new Size(sizes[resIdx].Width * 48 / 50 + 4, sizes[resIdx].Height * 48 / 100 - sbGame.Height - 25);
+            gbGame3.Paint += gbGame3_Paint;
+            this.Controls.Add(gbGame3);
+
+            //gbGame1.Invalidate(true);
+
+            //Invalidate(true);
+
             Timer timerGame = new Timer();
             timerGame.Interval = 100;
             timerGame.Tick += timerGame_tick;
-
 
             timerGame.Start();
             this.CenterToScreen();
@@ -297,6 +318,24 @@ namespace Multitask
 
 
         /* -------------------EVENT HANDLERS------------------- */
+
+        private void gbGame1_Paint(object sender, PaintEventArgs e)
+        {
+            GroupBox box = sender as GroupBox;
+            DrawGroupBox(box, e.Graphics, Color.Red);
+        }
+
+        private void gbGame2_Paint(object sender, PaintEventArgs e)
+        {
+            GroupBox box = sender as GroupBox;
+            DrawGroupBox(box, e.Graphics, Color.Blue);
+        }
+
+        private void gbGame3_Paint(object sender, PaintEventArgs e)
+        {
+            GroupBox box = sender as GroupBox;
+            DrawGroupBox(box, e.Graphics, Color.Green);
+        }
 
         public void timerGame_tick(object sender, EventArgs e)
         {
@@ -428,6 +467,32 @@ namespace Multitask
         public void changeResolution(object sender, EventArgs e)
         {
             resIdx = ((ComboBox)sender).SelectedIndex;
+        }
+
+        private void DrawGroupBox(GroupBox box, Graphics g, Color borderColor)
+        {
+
+            Brush borderBrush = new SolidBrush(borderColor);
+            Pen borderPen = new Pen(borderBrush, 3);
+            SizeF strSize = g.MeasureString(box.Text, box.Font);
+            Rectangle rect = new Rectangle(box.ClientRectangle.X,
+                                           box.ClientRectangle.Y + (int)(strSize.Height / 2),
+                                           box.ClientRectangle.Width - 1,
+                                           box.ClientRectangle.Height - (int)(strSize.Height / 2) - 1);
+
+            g.Clear(this.BackColor);
+
+            //Left
+            g.DrawLine(borderPen, rect.Location, new Point(rect.X, rect.Y + rect.Height));
+            //Right
+            g.DrawLine(borderPen, new Point(rect.X + rect.Width, rect.Y), new Point(rect.X + rect.Width, rect.Y + rect.Height));
+            //Bottom
+            g.DrawLine(borderPen, new Point(rect.X, rect.Y + rect.Height), new Point(rect.X + rect.Width, rect.Y + rect.Height));
+            //Top1
+            g.DrawLine(borderPen, new Point(rect.X, rect.Y), new Point(rect.X + box.Padding.Left, rect.Y));
+            //Top2
+            g.DrawLine(borderPen, new Point(rect.X + box.Padding.Left + (int)(strSize.Width), rect.Y), new Point(rect.X + rect.Width, rect.Y));
+
         }
 
         private void gameForm_Load(object sender, EventArgs e)
