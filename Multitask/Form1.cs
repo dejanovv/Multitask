@@ -4,31 +4,67 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Multitask
 {
+
+    public enum Direction { UP, DOWN, RIGHT, LEFT };
+    public enum Difficulty { BEGINNER = 0, INTERMEDIATE, EXPERT, INSANE };
+
     public partial class gameForm : Form
     {
         /* -------------------STATICS------------------- */
         private static int currentLeaderboard = 1;
         // 1 tick = 100 ms
         public static int timeTicks = 0;
+        
+
+        public Difficulty difficulty;
 
         // score lists - serialize these when leaderboard is finished
         private static Tuple<String, Int32>[] scoresEasy = new Tuple<String, Int32>[10];
         private static Tuple<String, Int32>[] scoresIntermediate = new Tuple<String, Int32>[10];
         private static Tuple<String, Int32>[] scoresExpert = new Tuple<String, Int32>[10];
-        private static Tuple<String, Int32>[] scoresInsane = new Tuple<String, Int32>[10];
-        
+        private static Tuple<String, Int32>[] scoresInsane = new Tuple<String, Int32>[10];        
         
         // resolution
-        static int resIdx = 0;
-        static Size[] sizes = new Size[5] { new Size(800, 600), new Size(900, 675), new Size(1000, 750), new Size(1200, 900), new Size(1600, 1200) };
+        public static int resIdx = 0;
+        public static Size[] sizes = new Size[5] { new Size(800, 600), new Size(900, 675), new Size(1000, 750), new Size(1200, 900), new Size(1600, 1200) };
+
+        // playareas
+        public static Rectangle playArea1;
+        public static Rectangle playArea2;
+        public static Rectangle playArea3;
+
+        // spawn rates
+        static int[] ps = new int[4] { 4, 3, 2, 1 };
+        static int spawnPeriod = 0;
+        static int prev_sec = -1;
+        
+
+
+        public bool isGameOver;
+        public Timer timerGame;
+
 
         /* -------------------END-STATICS------------------- */
+
+        private Game1 game1;
+        //private Game2 game2;
+        //private Game3 game3;
+
+
+        bool w = false;
+        bool a = false;
+        bool s = false;
+        bool d = false;
+        bool up_arrow = false;
+        bool down_arrow = false;
+        bool space = false;
 
 
         public gameForm()
@@ -40,6 +76,7 @@ namespace Multitask
             scoresIntermediate[0] = Tuple.Create("inter", 30);
             scoresIntermediate[2] = Tuple.Create("innn", 40);
 
+            isGameOver = false;
             this.DoubleBuffered = true;
             this.CenterToScreen();
 
@@ -49,6 +86,7 @@ namespace Multitask
         /* -------------------SCREEN LOADERS------------------- */
         public void loadStartScreen()
         {
+            this.MaximizeBox = false;
             Label lblTitle = new Label();
             lblTitle.Text = "MultiTask";
             lblTitle.Location = new Point(60, 10);
@@ -110,6 +148,7 @@ namespace Multitask
 
         public void loadDifficultyScreen()
         {
+            this.MaximizeBox = false;
             Label lblTitle = new Label();
             lblTitle.Text = "Choose difficulty:";
             lblTitle.Location = new Point(30, 10);
@@ -149,8 +188,6 @@ namespace Multitask
             btnBack.Text = "Main menu";
             btnBack.Click += btnBack_click;
 
-
-
             this.Controls.Add(lblTitle);
             this.Controls.Add(btnBeginner);
             this.Controls.Add(btnIntermediate);
@@ -165,6 +202,7 @@ namespace Multitask
         public void loadLeaderboard( Tuple<String, Int32>[] scores)
         {
             this.disposeForm();
+            this.MaximizeBox = false;
             this.Size = new Size(320, 400);
             Button btnLoadLeaderboardEasy, btnLoadLeaderboardIntermediate, btnLoadLeaderboardExpert, btnLoadLeaderboardInsane, btnClearLeaderboards, btnClearLeaderboard, btnBack;
 
@@ -242,6 +280,7 @@ namespace Multitask
 
         public void loadHowToScreen()
         {
+            this.MaximizeBox = false;
             Label lblTitle = new Label();
             lblTitle.Text = "How To Play";
             lblTitle.Location = new Point(30, 10);
@@ -263,12 +302,17 @@ namespace Multitask
 
         }
         public void loadGameScreen()
-        {
+        { 
+            this.MaximizeBox = false;
+            this.DoubleBuffered = true;
+            this.Paint += gameForm_Paint;
+
             this.Size = sizes[resIdx];
             StatusBar sbGame = new StatusBar();
-            StatusBarPanel lblTime, lblScore;
+            StatusBarPanel lblTime, lblScore, lblTest;
             lblTime = new StatusBarPanel();
             lblScore = new StatusBarPanel();
+            lblTest = new StatusBarPanel();
 
             lblTime.Name = "lblTime";
             lblTime.Text = "00:00";
@@ -276,74 +320,127 @@ namespace Multitask
             lblScore.Name = "lblScore";
             lblScore.Text = "0";
 
+            lblTest.Name = "lblTest";
+            lblTest.Text = "TEST";
+
             sbGame.Name = "sbGame";
             sbGame.Panels.Add(lblTime);
             sbGame.Panels.Add(lblScore);
+            sbGame.Panels.Add(lblTest);
 
             sbGame.ShowPanels = true;
             this.Controls.Add(sbGame);
 
-            GroupBox gbGame1 = new GroupBox();
-            gbGame1.Location = new Point(sizes[resIdx].Width/100-2, sizes[resIdx].Height/100 - 2);
-            gbGame1.Size = new Size(sizes[resIdx].Width*48/100, sizes[resIdx].Height*48/100);
-            gbGame1.Paint += gbGame1_Paint;
-            this.Controls.Add(gbGame1);
+            playArea1 = new Rectangle(new Point(sizes[resIdx].Width / 100-1, sizes[resIdx].Height / 100 - 2), new Size(sizes[resIdx].Width * 48 / 100, sizes[resIdx].Height * 48 / 100));
+            playArea2 = new Rectangle(new Point((sizes[resIdx].Width * 49 / 100 +1), sizes[resIdx].Height / 100 - 2), new Size(sizes[resIdx].Width * 48 / 100, sizes[resIdx].Height * 48 / 100));
+            playArea3 = new Rectangle(new Point(sizes[resIdx].Width / 100 - 1, (sizes[resIdx].Height * 48 / 100) + sizes[resIdx].Height * 1 / 100), new Size(sizes[resIdx].Width * 48 / 50 + 2, sizes[resIdx].Height * 48 / 100 - sbGame.Height - 24));
 
-            GroupBox gbGame2 = new GroupBox();
-            gbGame2.Location = new Point((sizes[resIdx].Width * 49 / 100) + 2, sizes[resIdx].Height / 100 - 2);
-            gbGame2.Size = new Size(sizes[resIdx].Width * 48 / 100, sizes[resIdx].Height * 48 / 100);
-            gbGame2.Paint += gbGame2_Paint;
-            this.Controls.Add(gbGame2);
+            this.game1 = new Game1();
 
-            GroupBox gbGame3 = new GroupBox();
-            gbGame3.Location = new Point(sizes[resIdx].Width / 100 - 2, (sizes[resIdx].Height * 48 / 100) + 6);
-            gbGame3.Size = new Size(sizes[resIdx].Width * 48 / 50 + 4, sizes[resIdx].Height * 48 / 100 - sbGame.Height - 25);
-            gbGame3.Paint += gbGame3_Paint;
-            this.Controls.Add(gbGame3);
 
-            //gbGame1.Invalidate(true);
+            timerGame = new Timer();
 
-            //Invalidate(true);
-
-            Timer timerGame = new Timer();
-            timerGame.Interval = 100;
+            timerGame.Interval = 15; // try 31
             timerGame.Tick += timerGame_tick;
 
             timerGame.Start();
             this.CenterToScreen();
-            this.Invalidate(true);
+            Invalidate(true);
         }
 
         /* -------------------END SCREEN LOADERS------------------- */
 
 
+
         /* -------------------EVENT HANDLERS------------------- */
 
-        private void gbGame1_Paint(object sender, PaintEventArgs e)
+
+        protected override void OnKeyDown(KeyEventArgs e)
         {
-            GroupBox box = sender as GroupBox;
-            DrawGroupBox(box, e.Graphics, Color.Red);
+         
+            base.OnKeyDown(e);
+
+            if (e.KeyCode == Keys.W)
+                w = true;
+            if (e.KeyCode == Keys.A)
+                a = true;
+            if (e.KeyCode == Keys.S)
+                s = true;
+            if (e.KeyCode == Keys.D)
+                d = true;
         }
 
-        private void gbGame2_Paint(object sender, PaintEventArgs e)
+
+        protected override void OnKeyUp(KeyEventArgs e)
         {
-            GroupBox box = sender as GroupBox;
-            DrawGroupBox(box, e.Graphics, Color.Blue);
+            base.OnKeyUp(e);
+
+            if (e.KeyCode == Keys.W)
+                w = false;
+            if (e.KeyCode == Keys.A)
+                a = false;
+            if (e.KeyCode == Keys.S)
+                s = false;
+            if (e.KeyCode == Keys.D)
+                d = false;
         }
 
-        private void gbGame3_Paint(object sender, PaintEventArgs e)
+        private void gameForm_Paint(object sender, PaintEventArgs e)
         {
-            GroupBox box = sender as GroupBox;
-            DrawGroupBox(box, e.Graphics, Color.Green);
+            
+            e.Graphics.DrawRectangle(new Pen(Color.Red, 3), playArea1);
+            e.Graphics.DrawRectangle(new Pen(Color.Blue, 3), playArea2);
+            e.Graphics.DrawRectangle(new Pen(Color.Green, 3), playArea3);
+
+            if (game1 != null)
+            {
+                (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[2]) as StatusBarPanel).Text = "VLEGOV";
+                
+                game1.Draw(e.Graphics);
+            }
+            
         }
 
         public void timerGame_tick(object sender, EventArgs e)
         {
+            if(isGameOver)
+            {
+                timerGame.Stop();
+            }
             timeTicks++;
-            int[] time_data = new int[] { (timeTicks / 600) / 10 % 100, (timeTicks / 600) % 10, (timeTicks / 10) % 60 / 10 % 10, (timeTicks / 10) % 60 % 10 };
+            int seconds = (timeTicks * 15) / 1000;
+            int[] time_data = new int[] { (seconds/60)/10, (seconds/60)%10, seconds / 10, seconds % 10 };
 
             (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[0]) as StatusBarPanel).Text = String.Format("{0}{1}:{2}{3}", time_data.Select(x => x.ToString()).ToArray());
-            (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[1]) as StatusBarPanel).Text = String.Format("Score: {0}", ((Int32)timeTicks*10).ToString());
+            (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[1]) as StatusBarPanel).Text = String.Format("Score: {0}", ((Int32)(seconds*2)*100).ToString());
+
+            if (game1 != null)
+            {
+                if (w)
+                    game1.Move(Direction.UP);
+                if (a)
+                    game1.Move(Direction.LEFT);
+                if (s)
+                    game1.Move(Direction.DOWN);
+                if (d)
+                    game1.Move(Direction.RIGHT);
+
+
+                game1.CheckHits();
+                if (prev_sec != seconds)
+                {
+                    game1.Decrement();
+                    prev_sec = seconds;
+
+                    if (seconds % spawnPeriod == 0)
+                        game1.Spawn();
+                }
+
+            }
+
+            //this.myInvalidate();
+            this.Refresh();
+            
         }     
 
         public void btnBack_click(object sender, EventArgs e)
@@ -361,26 +458,30 @@ namespace Multitask
 
         public void btnBeginner_click(object sender, EventArgs e)
         {
-            //todo: set difficulty parameters
+            difficulty = Difficulty.BEGINNER;
+            spawnPeriod = ps[(int)difficulty];
             this.disposeForm();
             this.loadGameScreen();
 
         }
         public void btnIntermediate_click(object sender, EventArgs e)
         {
-            //todo: set difficulty parameters
+            difficulty = Difficulty.INTERMEDIATE;
+            spawnPeriod = ps[(int)difficulty];
             this.disposeForm();
             this.loadGameScreen();
         }
         public void btnExpert_click(object sender, EventArgs e)
         {
-            //todo: set difficulty parameters
+            difficulty = Difficulty.EXPERT;
+            spawnPeriod = ps[(int)difficulty];
             this.disposeForm();
             this.loadGameScreen();
         }
         public void btnInsane_click(object sender, EventArgs e)
         {
-            //todo: set difficulty parameters
+            difficulty = Difficulty.INSANE;
+            spawnPeriod = ps[(int)difficulty];
             this.disposeForm();
             this.loadGameScreen();
         }
@@ -467,32 +568,6 @@ namespace Multitask
         public void changeResolution(object sender, EventArgs e)
         {
             resIdx = ((ComboBox)sender).SelectedIndex;
-        }
-
-        private void DrawGroupBox(GroupBox box, Graphics g, Color borderColor)
-        {
-
-            Brush borderBrush = new SolidBrush(borderColor);
-            Pen borderPen = new Pen(borderBrush, 3);
-            SizeF strSize = g.MeasureString(box.Text, box.Font);
-            Rectangle rect = new Rectangle(box.ClientRectangle.X,
-                                           box.ClientRectangle.Y + (int)(strSize.Height / 2),
-                                           box.ClientRectangle.Width - 1,
-                                           box.ClientRectangle.Height - (int)(strSize.Height / 2) - 1);
-
-            g.Clear(this.BackColor);
-
-            //Left
-            g.DrawLine(borderPen, rect.Location, new Point(rect.X, rect.Y + rect.Height));
-            //Right
-            g.DrawLine(borderPen, new Point(rect.X + rect.Width, rect.Y), new Point(rect.X + rect.Width, rect.Y + rect.Height));
-            //Bottom
-            g.DrawLine(borderPen, new Point(rect.X, rect.Y + rect.Height), new Point(rect.X + rect.Width, rect.Y + rect.Height));
-            //Top1
-            g.DrawLine(borderPen, new Point(rect.X, rect.Y), new Point(rect.X + box.Padding.Left, rect.Y));
-            //Top2
-            g.DrawLine(borderPen, new Point(rect.X + box.Padding.Left + (int)(strSize.Width), rect.Y), new Point(rect.X + rect.Width, rect.Y));
-
         }
 
         private void gameForm_Load(object sender, EventArgs e)
