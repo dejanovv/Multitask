@@ -15,16 +15,15 @@ namespace Multitask
         private Point position;
         private int velocity;
         private Random r;
-        List<Rectangle> squares;
-        List<short> times;
+        private List<Rectangle> squares;
+        private List<short> times;
 
-        //private int spawnPeriod;
         public Game1()
         { 
             gForm = Application.OpenForms[0] as gameForm;
             playerSize = new Size(gameForm.playArea1.Size.Width/12, gameForm.playArea1.Size.Width / 12);
             position = new Point(gameForm.playArea1.Size.Width / 2, gameForm.playArea1.Size.Height / 2);
-            velocity = gameForm.playArea1.Size.Width / 160;
+            velocity = (int) (1.5* gameForm.playArea1.Size.Width / 160);
 
             r = new Random();
             squares = new List<Rectangle>();
@@ -72,6 +71,7 @@ namespace Multitask
                 if(times[i] == -1)
                 {
                     gForm.isGameOver = true;
+                    return;
                 }
             }
             
@@ -116,11 +116,6 @@ namespace Multitask
             Rectangle t = new Rectangle(t_point, playerSize);
             squares.Add(t);
             times.Add(10);
-        }
-        
-
-
-
-        
+        }        
     }
 }

@@ -19,7 +19,7 @@ namespace Multitask
     {
         /* -------------------STATICS------------------- */
         private static int currentLeaderboard = 1;
-        // 1 tick = 100 ms
+        // 1 tick = 15 ms
         public static int timeTicks = 0;
         
 
@@ -41,21 +41,19 @@ namespace Multitask
         public static Rectangle playArea3;
 
         // spawn rates
-        static int[] ps = new int[4] { 4, 3, 2, 1 };
-        static int spawnPeriod = 0;
+        static int[] ps_game1 = new int[4] { 4, 3, 2, 1 };
+        static int spawnPeriod_game1 = 0;
+        static int modus_game3 = 5;
         static int prev_sec = -1;
-        
-
-
-        public bool isGameOver;
-        public Timer timerGame;
 
 
         /* -------------------END-STATICS------------------- */
 
+        public bool isGameOver;
+        public Timer timerGame;
         private Game1 game1;
-        //private Game2 game2;
-        //private Game3 game3;
+        private Game2 game2;
+        private Game3 game3;
 
 
         bool w = false;
@@ -142,6 +140,7 @@ namespace Multitask
             this.Controls.Add(cbRes);
             this.Controls.Add(lblScreenRes);
 
+            this.DoubleBuffered = true;
             this.CenterToScreen();
             this.Invalidate(true);
         }
@@ -195,6 +194,7 @@ namespace Multitask
             this.Controls.Add(btnInsane);
             this.Controls.Add(btnBack);
 
+            this.DoubleBuffered = true;
             this.CenterToScreen();
             this.Invalidate(true);
         }
@@ -276,6 +276,10 @@ namespace Multitask
             this.Controls.Add(lblScores);
             this.Controls.Add(btnClearLeaderboard);
             this.Controls.Add(btnBack);
+
+            this.DoubleBuffered = true;
+            this.CenterToScreen();
+            Invalidate(true);
         }
 
         public void loadHowToScreen()
@@ -300,6 +304,9 @@ namespace Multitask
             this.Controls.Add(lblHowTo);
             this.Controls.Add(btnBack);
 
+            this.DoubleBuffered = true;
+            this.CenterToScreen();
+            Invalidate(true);
         }
         public void loadGameScreen()
         { 
@@ -336,7 +343,7 @@ namespace Multitask
             playArea3 = new Rectangle(new Point(sizes[resIdx].Width / 100 - 1, (sizes[resIdx].Height * 48 / 100) + sizes[resIdx].Height * 1 / 100), new Size(sizes[resIdx].Width * 48 / 50 + 2, sizes[resIdx].Height * 48 / 100 - sbGame.Height - 24));
 
             this.game1 = new Game1();
-
+            this.game3 = new Game3();
 
             timerGame = new Timer();
 
@@ -368,6 +375,8 @@ namespace Multitask
                 s = true;
             if (e.KeyCode == Keys.D)
                 d = true;
+            if (e.KeyCode == Keys.Space)
+                space = true;
         }
 
 
@@ -383,6 +392,8 @@ namespace Multitask
                 s = false;
             if (e.KeyCode == Keys.D)
                 d = false;
+            if (e.KeyCode == Keys.Space)
+                space = false;
         }
 
         private void gameForm_Paint(object sender, PaintEventArgs e)
@@ -394,11 +405,13 @@ namespace Multitask
 
             if (game1 != null)
             {
-                (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[2]) as StatusBarPanel).Text = "VLEGOV";
-                
-                game1.Draw(e.Graphics);
+                game1.Draw(e.Graphics);   
             }
-            
+            if(game3 != null)
+            {
+                game3.Draw(e.Graphics);
+            }
+
         }
 
         public void timerGame_tick(object sender, EventArgs e)
@@ -430,17 +443,31 @@ namespace Multitask
                 if (prev_sec != seconds)
                 {
                     game1.Decrement();
-                    prev_sec = seconds;
+                    
 
-                    if (seconds % spawnPeriod == 0)
+                    if (seconds % spawnPeriod_game1 == 0)
                         game1.Spawn();
                 }
-
             }
 
-            //this.myInvalidate();
+            if (game3 != null)
+            {                
+                if (space)
+                    game3.Boost();
+
+                game3.Move();
+                game3.CheckHits();
+
+                if(prev_sec != seconds)
+                {
+                    game3.Spawn(modus_game3);
+                }
+            }
+
+            if (prev_sec != seconds)
+                prev_sec = seconds;
+
             this.Refresh();
-            
         }     
 
         public void btnBack_click(object sender, EventArgs e)
@@ -459,7 +486,8 @@ namespace Multitask
         public void btnBeginner_click(object sender, EventArgs e)
         {
             difficulty = Difficulty.BEGINNER;
-            spawnPeriod = ps[(int)difficulty];
+            spawnPeriod_game1 = ps_game1[(int)difficulty];
+            modus_game3 = 5;
             this.disposeForm();
             this.loadGameScreen();
 
@@ -467,21 +495,24 @@ namespace Multitask
         public void btnIntermediate_click(object sender, EventArgs e)
         {
             difficulty = Difficulty.INTERMEDIATE;
-            spawnPeriod = ps[(int)difficulty];
+            spawnPeriod_game1 = ps_game1[(int)difficulty];
+            modus_game3 = 4;
             this.disposeForm();
             this.loadGameScreen();
         }
         public void btnExpert_click(object sender, EventArgs e)
         {
             difficulty = Difficulty.EXPERT;
-            spawnPeriod = ps[(int)difficulty];
+            spawnPeriod_game1 = ps_game1[(int)difficulty];
+            modus_game3 = 3;
             this.disposeForm();
             this.loadGameScreen();
         }
         public void btnInsane_click(object sender, EventArgs e)
         {
             difficulty = Difficulty.INSANE;
-            spawnPeriod = ps[(int)difficulty];
+            spawnPeriod_game1 = ps_game1[(int)difficulty];
+            modus_game3 = 2;
             this.disposeForm();
             this.loadGameScreen();
         }
@@ -570,8 +601,34 @@ namespace Multitask
             resIdx = ((ComboBox)sender).SelectedIndex;
         }
 
+        public void resetParams()
+        {
+
+        }
+
         private void gameForm_Load(object sender, EventArgs e)
         {
+            resIdx = 0;
+            difficulty = 0;
+            spawnPeriod_game1 = 0;
+            modus_game3 = 5;
+            prev_sec = -1;
+            game1 = null;
+            game2 = null;
+            game3 = null;
+            currentLeaderboard = 1;
+            timeTicks = 0;
+            isGameOver = false;
+            timerGame = null;
+            w = false;
+            a = false;
+            s = false;
+            d = false;
+            up_arrow = false;
+            down_arrow = false;
+            space = false;
+
+
 
         }
         /* -------------------END MISC------------------- */
