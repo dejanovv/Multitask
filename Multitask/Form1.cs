@@ -331,7 +331,7 @@ namespace Multitask
 
             Label lblHowTo = new Label();
             lblHowTo.Size = new Size(180, 230);
-            lblHowTo.Text = "The goal is to play the three games simultaneously for as long as possible. If you lose in one, it's game over. You have 10 seconds to get each square in game one using the keyboard arrows. If the timer gets to 0, you lose. In the second game, you use the W and S keys to move up and down respectively in order to avoid getting hit by the flying squares. In the third game, you avoid the obstacles coming your way by jumping using space. Choose your difficulty and see how good you are at multitasking!";
+            lblHowTo.Text = "The goal is to play the three games simultaneously for as long as possible. If you lose in one, it's game over. You have 10 seconds to get each square in game one using W, S, A, D (to move up, down, left and right respectively). If the timer gets to 0, you lose. In the second game, you use the up and down arrows in order to avoid getting hit by the flying squares. In the third game, you avoid the obstacles coming your way by jumping using space. Choose your difficulty and see how good you are at multitasking!";
             lblHowTo.Location = new Point(10, 30);
             lblHowTo.TextAlign = ContentAlignment.MiddleCenter;
 
