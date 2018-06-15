@@ -43,6 +43,7 @@ namespace Multitask
         // spawn rates
         static int[] ps_game1 = new int[4] { 4, 3, 2, 1 };
         static int spawnPeriod_game1 = 0;
+        static int spawnPeriod_game2 = 0;
         static int modus_game3 = 5;
         static int prev_sec = -1;
 
@@ -60,9 +61,8 @@ namespace Multitask
         bool a = false;
         bool s = false;
         bool d = false;
-        bool up_arrow = false;
-        bool down_arrow = false;
         bool space = false;
+        bool ud = false;
 
 
         public gameForm()
@@ -313,13 +313,15 @@ namespace Multitask
             this.MaximizeBox = false;
             this.DoubleBuffered = true;
             this.Paint += gameForm_Paint;
+            this.KeyDown += gameForm_KeyDown;
+            this.KeyUp += gameForm_KeyUp;
 
             this.Size = sizes[resIdx];
             StatusBar sbGame = new StatusBar();
             StatusBarPanel lblTime, lblScore, lblTest;
             lblTime = new StatusBarPanel();
             lblScore = new StatusBarPanel();
-            lblTest = new StatusBarPanel();
+            //lblTest = new StatusBarPanel();
 
             lblTime.Name = "lblTime";
             lblTime.Text = "00:00";
@@ -327,13 +329,13 @@ namespace Multitask
             lblScore.Name = "lblScore";
             lblScore.Text = "0";
 
-            lblTest.Name = "lblTest";
-            lblTest.Text = "TEST";
+            //lblTest.Name = "lblTest";
+            //lblTest.Text = "TEST";
 
             sbGame.Name = "sbGame";
             sbGame.Panels.Add(lblTime);
             sbGame.Panels.Add(lblScore);
-            sbGame.Panels.Add(lblTest);
+            //sbGame.Panels.Add(lblTest);
 
             sbGame.ShowPanels = true;
             this.Controls.Add(sbGame);
@@ -343,11 +345,12 @@ namespace Multitask
             playArea3 = new Rectangle(new Point(sizes[resIdx].Width / 100 - 1, (sizes[resIdx].Height * 48 / 100) + sizes[resIdx].Height * 1 / 100), new Size(sizes[resIdx].Width * 48 / 50 + 2, sizes[resIdx].Height * 48 / 100 - sbGame.Height - 24));
 
             this.game1 = new Game1();
+            this.game2 = new Game2();
             this.game3 = new Game3();
 
             timerGame = new Timer();
 
-            timerGame.Interval = 15; // try 31
+            timerGame.Interval = 15;
             timerGame.Tick += timerGame_tick;
 
             timerGame.Start();
@@ -361,6 +364,32 @@ namespace Multitask
 
         /* -------------------EVENT HANDLERS------------------- */
 
+
+        private void gameForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            ud = false;
+        }
+
+        private void gameForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Up && !ud)
+            {
+                if(game2 != null)
+                {
+                    ud = true;
+                    game2.MovePlayer(Direction.UP);
+                }
+            }
+            else if(e.KeyCode == Keys.Down)
+            {
+                if (game2 != null && !ud)
+                {
+                    ud = true;
+                    game2.MovePlayer(Direction.DOWN);
+                }
+            }
+
+        }
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
@@ -403,9 +432,29 @@ namespace Multitask
             e.Graphics.DrawRectangle(new Pen(Color.Blue, 3), playArea2);
             e.Graphics.DrawRectangle(new Pen(Color.Green, 3), playArea3);
 
+            int base_size;
+            int base_x, base_y;
+            base_size = playArea1.Width / 12;
+            base_x = playArea2.Location.X + playArea2.Width / 2 - base_size/2;
+            base_y = playArea2.Location.Y + playArea2.Height / 2;
+
+            e.Graphics.DrawLine(new Pen(Color.Black, 3), new Point(base_x, base_y), new Point(base_x + base_size, base_y));
+            e.Graphics.DrawLine(new Pen(Color.Black, 3), new Point(base_x, base_y-base_size), new Point(base_x + base_size, base_y-base_size));
+            e.Graphics.DrawLine(new Pen(Color.Black, 3), new Point(base_x, base_y-2*base_size), new Point(base_x + base_size, base_y-2*base_size));
+            e.Graphics.DrawLine(new Pen(Color.Black, 3), new Point(base_x, base_y+base_size), new Point(base_x + base_size, base_y+base_size));
+            e.Graphics.DrawLine(new Pen(Color.Black, 3), new Point(base_x, base_y+2*base_size), new Point(base_x + base_size, base_y+2*base_size));
+
+            e.Graphics.DrawLine(new Pen(Color.Black, 3), new Point(base_x, base_y-2*base_size), new Point(base_x, base_y + 2*base_size));
+            e.Graphics.DrawLine(new Pen(Color.Black, 3), new Point(base_x + base_size, base_y-2*base_size), new Point(base_x + base_size, base_y + 2*base_size));
+
+
             if (game1 != null)
             {
                 game1.Draw(e.Graphics);   
+            }
+            if(game2 != null)
+            {
+                game2.Draw(e.Graphics);
             }
             if(game3 != null)
             {
@@ -450,6 +499,16 @@ namespace Multitask
                 }
             }
 
+            if(game2 != null)
+            {
+
+                game2.MoveEnv();
+                if (prev_sec != seconds)
+                {
+                    game2.Spawn();
+                }
+            }
+
             if (game3 != null)
             {                
                 if (space)
@@ -487,6 +546,7 @@ namespace Multitask
         {
             difficulty = Difficulty.BEGINNER;
             spawnPeriod_game1 = ps_game1[(int)difficulty];
+            spawnPeriod_game2 = ps_game1[(int)difficulty];
             modus_game3 = 5;
             this.disposeForm();
             this.loadGameScreen();
@@ -496,6 +556,7 @@ namespace Multitask
         {
             difficulty = Difficulty.INTERMEDIATE;
             spawnPeriod_game1 = ps_game1[(int)difficulty];
+            spawnPeriod_game2 = ps_game1[(int)difficulty];
             modus_game3 = 4;
             this.disposeForm();
             this.loadGameScreen();
@@ -504,6 +565,7 @@ namespace Multitask
         {
             difficulty = Difficulty.EXPERT;
             spawnPeriod_game1 = ps_game1[(int)difficulty];
+            spawnPeriod_game2 = ps_game1[(int)difficulty];
             modus_game3 = 3;
             this.disposeForm();
             this.loadGameScreen();
@@ -512,6 +574,7 @@ namespace Multitask
         {
             difficulty = Difficulty.INSANE;
             spawnPeriod_game1 = ps_game1[(int)difficulty];
+            spawnPeriod_game2 = ps_game1[(int)difficulty];
             modus_game3 = 2;
             this.disposeForm();
             this.loadGameScreen();
@@ -611,6 +674,7 @@ namespace Multitask
             resIdx = 0;
             difficulty = 0;
             spawnPeriod_game1 = 0;
+            spawnPeriod_game2 = 0;
             modus_game3 = 5;
             prev_sec = -1;
             game1 = null;
@@ -624,11 +688,8 @@ namespace Multitask
             a = false;
             s = false;
             d = false;
-            up_arrow = false;
-            down_arrow = false;
+            ud = false;
             space = false;
-
-
 
         }
         /* -------------------END MISC------------------- */

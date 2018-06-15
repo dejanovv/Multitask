@@ -25,7 +25,7 @@ namespace Multitask
             position = new Point(gameForm.playArea1.Size.Width / 2, gameForm.playArea1.Size.Height / 2);
             velocity = (int) (1.5* gameForm.playArea1.Size.Width / 160);
 
-            r = new Random();
+            r = new Random(DateTime.Now.Millisecond);
             squares = new List<Rectangle>();
             times = new List<short>();
         }
