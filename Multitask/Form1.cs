@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,24 +14,49 @@ using System.Windows.Forms;
 namespace Multitask
 {
 
-    public enum Direction { UP, DOWN, RIGHT, LEFT };
+    public enum Direction { UP = 0, DOWN, RIGHT, LEFT };
     public enum Difficulty { BEGINNER = 0, INTERMEDIATE, EXPERT, INSANE };
+    
+    [Serializable]
+    public class Scores
+    {
+        // score lists - serialize these when leaderboard is finishedf
+        public List<Tuple<String, Int32>> scoresEasy;
+        public List<Tuple<String, Int32>> scoresIntermediate;
+        public List<Tuple<String, Int32>> scoresExpert;
+        public List<Tuple<String, Int32>> scoresInsane;
+
+        public Scores()
+        {
+            scoresEasy = new List<Tuple<string, int>>();
+            scoresIntermediate = new List<Tuple<string, int>>();
+            scoresExpert = new List<Tuple<string, int>>();
+            scoresInsane = new List<Tuple<string, int>>();  
+        }
+
+     
+    }
 
     public partial class gameForm : Form
     {
         /* -------------------STATICS------------------- */
         private static int currentLeaderboard = 1;
         // 1 tick = 15 ms
-        public static int timeTicks = 0;
+        public static int timeTicks = 0;        
         
-
         public Difficulty difficulty;
 
-        // score lists - serialize these when leaderboard is finished
-        private static Tuple<String, Int32>[] scoresEasy = new Tuple<String, Int32>[10];
-        private static Tuple<String, Int32>[] scoresIntermediate = new Tuple<String, Int32>[10];
-        private static Tuple<String, Int32>[] scoresExpert = new Tuple<String, Int32>[10];
-        private static Tuple<String, Int32>[] scoresInsane = new Tuple<String, Int32>[10];        
+        //
+        //private static string folderpath = @"..\..\data";
+        private static string folderPath = @"data";
+        //private static string filePath = @"..\..\data\scores.data";
+        private static string filePath = @"data\scores.data";
+
+        // scores
+        private Scores scores;
+        private int currentScore;
+     
+      
         
         // resolution
         public static int resIdx = 0;
@@ -51,30 +78,41 @@ namespace Multitask
         /* -------------------END-STATICS------------------- */
 
         public bool isGameOver;
-        public Timer timerGame;
+        private Timer timerGame;
         private Game1 game1;
         private Game2 game2;
         private Game3 game3;
 
 
-        bool w = false;
-        bool a = false;
-        bool s = false;
-        bool d = false;
-        bool space = false;
-        bool ud = false;
+        private bool w = false;
+        private bool a = false;
+        private bool s = false;
+        private bool d = false;
+        private bool space = false;
+        private bool ud = false;
 
 
         public gameForm()
         {
             InitializeComponent();
-            //to delete
-            scoresEasy[0] = Tuple.Create("blah", 10);
-            scoresEasy[1] = Tuple.Create("meh", 220);
-            scoresIntermediate[0] = Tuple.Create("inter", 30);
-            scoresIntermediate[2] = Tuple.Create("innn", 40);
 
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+            if (!File.Exists(filePath))
+            {
+                scores = new Scores();
+            }
+            else
+            {
+                scores = DeserializeScores();
+
+                if (scores == null)
+                    scores = new Scores();
+            }
             isGameOver = false;
+            currentScore = 0;
             this.DoubleBuffered = true;
             this.CenterToScreen();
 
@@ -199,7 +237,7 @@ namespace Multitask
             this.Invalidate(true);
         }
 
-        public void loadLeaderboard( Tuple<String, Int32>[] scores)
+        public void loadLeaderboard( List< Tuple<String, Int32> > scores)
         {
             this.disposeForm();
             this.MaximizeBox = false;
@@ -236,7 +274,7 @@ namespace Multitask
             Label lblScores = new Label();
             lblScores.Text = "";
             lblScores.Location = new Point(10, 40);
-            lblScores.Size = new Size(200, 100);
+            lblScores.Size = new Size(200, 150);
 
             var scoresFormatted = scores.Where(x => x != null).OrderByDescending(x => x.Item2)
                 .Select(x => x.Item1 + "                            " + x.Item2 + "\n").ToList();
@@ -250,7 +288,7 @@ namespace Multitask
             }
             else
             {
-                for (int i = 1; i <= scoresFormatted.Count; i++)
+                for (int i = 1; i <= Math.Min(scoresFormatted.Count, 10); i++)
                 {
                     lblScores.Text = lblScores.Text + i + ". " + scoresFormatted[i - 1];
                 }
@@ -356,6 +394,187 @@ namespace Multitask
             timerGame.Start();
             this.CenterToScreen();
             Invalidate(true);
+        }
+        public void loadGameOver()
+        {
+            // badly needs refactor, but works
+
+            if (difficulty == Difficulty.BEGINNER)
+            {
+                if (scores.scoresEasy.Count < 10)
+                {
+                    frmScoreEntry newScore = new frmScoreEntry();
+                    DialogResult = newScore.ShowDialog();
+
+                    if (DialogResult == DialogResult.OK)
+                    {
+                        scores.scoresEasy.Add(Tuple.Create(newScore.nameToAdd, currentScore));
+                        SerializeScores();
+                        resetGame();
+                    }
+                    else
+                    {
+                        
+                        resetGame();
+                    }
+                }
+                else if(  scores.scoresEasy.OrderByDescending((x => x.Item2)).Select(x => x.Item2).ElementAt(9) < currentScore)
+                {
+                    frmScoreEntry newScore = new frmScoreEntry();
+                    DialogResult = newScore.ShowDialog();
+
+                    if (DialogResult == DialogResult.OK)
+                    {
+                        scores.scoresEasy.Add(Tuple.Create(newScore.nameToAdd, currentScore));
+                        SerializeScores();
+                        resetGame();
+                    }
+                    else
+                    {
+                        resetGame();
+                    }
+                }
+                else
+                {
+                    if(MessageBox.Show("You lost!", "Game over!", MessageBoxButtons.OK) == DialogResult.OK)
+                    {
+                        resetGame();
+                    }
+                }
+            }
+            else if(difficulty == Difficulty.INTERMEDIATE)
+            {
+                if (scores.scoresIntermediate.Count < 10)
+                {
+                    frmScoreEntry newScore = new frmScoreEntry();
+                    DialogResult = newScore.ShowDialog();
+
+                    if (DialogResult == DialogResult.OK)
+                    {
+                        scores.scoresIntermediate.Add(Tuple.Create(newScore.nameToAdd, currentScore));
+                        SerializeScores();
+                        resetGame();
+                    }
+                    else
+                    {
+                        resetGame();
+                    }
+                }
+                else if (scores.scoresIntermediate.OrderByDescending((x => x.Item2)).Select(x => x.Item2).ElementAt(9) < currentScore)
+                {
+                    frmScoreEntry newScore = new frmScoreEntry();
+                    DialogResult = newScore.ShowDialog();
+
+                    if (DialogResult == DialogResult.OK)
+                    {
+                        scores.scoresIntermediate.Add(Tuple.Create(newScore.nameToAdd, currentScore));
+                        SerializeScores();
+                        resetGame();
+                    }
+                    else
+                    {
+                        resetGame();
+                    }
+                }
+                else
+                {
+                    if (MessageBox.Show("You lost!", "Game over!", MessageBoxButtons.OK) == DialogResult.OK)
+                    {
+                        resetGame();
+                    }
+                }
+
+            }
+            else if(difficulty == Difficulty.EXPERT)
+            {
+                if (scores.scoresExpert.Count < 10)
+                {
+                    frmScoreEntry newScore = new frmScoreEntry();
+                    DialogResult = newScore.ShowDialog();
+
+                    if (DialogResult == DialogResult.OK)
+                    {
+                        scores.scoresExpert.Add(Tuple.Create(newScore.nameToAdd, currentScore));
+                        SerializeScores();
+                        resetGame();
+                    }
+                    else
+                    {
+                        resetGame();
+                    }
+                }
+                else if (scores.scoresExpert.OrderByDescending((x => x.Item2)).Select(x => x.Item2).ElementAt(9) < currentScore)
+                {
+                    frmScoreEntry newScore = new frmScoreEntry();
+                    DialogResult = newScore.ShowDialog();
+
+                    if (DialogResult == DialogResult.OK)
+                    {
+                        scores.scoresExpert.Add(Tuple.Create(newScore.nameToAdd, currentScore));
+                        SerializeScores();
+                        resetGame();
+                    }
+                    else
+                    {
+                        resetGame();
+                    }
+                }
+                else
+                {
+                    if (MessageBox.Show("You lost!", "Game over!", MessageBoxButtons.OK) == DialogResult.OK)
+                    {
+                        resetGame();
+                    }
+                }
+
+            }
+            else if(difficulty == Difficulty.INSANE)
+            {
+                if (scores.scoresInsane.Count < 10)
+                {
+                    frmScoreEntry newScore = new frmScoreEntry();
+                    DialogResult = newScore.ShowDialog();
+
+                    if (DialogResult == DialogResult.OK)
+                    {
+                        scores.scoresInsane.Add(Tuple.Create(newScore.nameToAdd, currentScore));
+                        SerializeScores();
+                        resetGame();
+                    }
+                    else
+                    {
+                        resetGame();
+                    }
+                }
+                else if (scores.scoresInsane.OrderByDescending((x => x.Item2)).Select(x => x.Item2).ElementAt(9) < currentScore)
+                {
+                    frmScoreEntry newScore = new frmScoreEntry();
+                    DialogResult = newScore.ShowDialog();
+
+                    if (DialogResult == DialogResult.OK)
+                    {
+                        scores.scoresInsane.Add(Tuple.Create(newScore.nameToAdd, currentScore));
+                        SerializeScores();
+                        resetGame();
+                    }
+                    else
+                    {
+                        resetGame();
+                    }
+                }
+                else
+                {
+                    if (MessageBox.Show("You lost!", "Game over!", MessageBoxButtons.OK) == DialogResult.OK)
+                    {
+                        resetGame();
+                    }
+                }
+
+            }
+
+
+            //resetParams();
+            return;
         }
 
         /* -------------------END SCREEN LOADERS------------------- */
@@ -468,13 +687,16 @@ namespace Multitask
             if(isGameOver)
             {
                 timerGame.Stop();
+                loadGameOver();
+                return;
             }
             timeTicks++;
             int seconds = (timeTicks * 15) / 1000;
             int[] time_data = new int[] { (seconds/60)/10, (seconds/60)%10, seconds / 10, seconds % 10 };
 
+            currentScore = 200 * seconds;
             (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[0]) as StatusBarPanel).Text = String.Format("{0}{1}:{2}{3}", time_data.Select(x => x.ToString()).ToArray());
-            (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[1]) as StatusBarPanel).Text = String.Format("Score: {0}", ((Int32)(seconds*2)*100).ToString());
+            (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[1]) as StatusBarPanel).Text = String.Format("Score: {0}", ((Int32)currentScore).ToString());
 
             if (game1 != null)
             {
@@ -501,11 +723,12 @@ namespace Multitask
 
             if(game2 != null)
             {
-
                 game2.MoveEnv();
                 if (prev_sec != seconds)
                 {
-                    game2.Spawn();
+                    if (seconds % spawnPeriod_game2 == 0)
+                        game2.Spawn();
+                
                 }
             }
 
@@ -592,32 +815,34 @@ namespace Multitask
         public void btnLoadLeaderboardEasy_click(object sender, EventArgs e)
         {
             currentLeaderboard = 1;
-            this.loadLeaderboard(scoresEasy);
+            this.loadLeaderboard(scores.scoresEasy);
         }
         public void btnLoadLeaderboardIntermediate_click(object sender, EventArgs e)
         {
             currentLeaderboard = 2;
-            this.loadLeaderboard(scoresIntermediate);
+            this.loadLeaderboard(scores.scoresIntermediate);
         }
         public void btnLoadLeaderboardExpert_click(object sender, EventArgs e)
         {
             currentLeaderboard = 3;
-            this.loadLeaderboard(scoresExpert);
+            this.loadLeaderboard(scores.scoresExpert);
         }
         public void btnLoadLeaderboardInsane_click(object sender, EventArgs e)
         {
             currentLeaderboard = 4;
-            this.loadLeaderboard(scoresInsane);
+            this.loadLeaderboard(scores.scoresInsane);
         }
        
         public void btnClearLeaderboards_click(object sender, EventArgs e)
         {
-            scoresEasy = new Tuple<String, Int32>[10];
-            scoresIntermediate = new Tuple<String, Int32>[10];
-            scoresExpert = new Tuple<String, Int32>[10];
-            scoresInsane = new Tuple<String, Int32>[10];
+            scores.scoresEasy = new List< Tuple<String, Int32> > ();
+            scores.scoresIntermediate = new List< Tuple<String, Int32> > ();
+            scores.scoresExpert = new List< Tuple<String, Int32> > ();
+            scores.scoresInsane= new List< Tuple<String, Int32> > ();
+
+            SerializeScores();
             this.disposeForm();
-            this.loadLeaderboard(scoresEasy);
+            this.loadLeaderboard(scores.scoresEasy);
 
         }
         public void btnClearLeaderboard_click(object sender, EventArgs e )
@@ -625,22 +850,23 @@ namespace Multitask
            switch (currentLeaderboard)
             {
                 case 1:
-                    scoresEasy = new Tuple<String, Int32>[10];
-                    this.loadLeaderboard(scoresEasy);
+                    scores.scoresEasy = new List<Tuple<String, Int32>>();
+                    this.loadLeaderboard(scores.scoresEasy);
                     break;
                 case 2:
-                    scoresIntermediate = new Tuple<String, Int32>[10];
-                    this.loadLeaderboard(scoresIntermediate);
+                    scores.scoresIntermediate = new List<Tuple<String, Int32>>();
+                    this.loadLeaderboard(scores.scoresIntermediate);
                     break;
                 case 3:
-                    scoresExpert = new Tuple<String, Int32>[10];
-                    this.loadLeaderboard(scoresExpert);
+                    scores.scoresExpert = new List<Tuple<String, Int32>>();
+                    this.loadLeaderboard(scores.scoresExpert);
                     break;
                 case 4:
-                    scoresInsane = new Tuple<String, Int32>[10];
-                    this.loadLeaderboard(scoresInsane);
+                    scores.scoresInsane = new List<Tuple<String, Int32>>();
+                    this.loadLeaderboard(scores.scoresInsane);
                     break;
             }
+            SerializeScores();
         }
         /* -------------------END EVENT HANDLERS------------------- */
 
@@ -652,13 +878,6 @@ namespace Multitask
             this.Controls.Clear();
         }
 
-
-        public void setFormParams()
-        {
-            this.DoubleBuffered = true;
-
-        }
-
         public void changeResolution(object sender, EventArgs e)
         {
             resIdx = ((ComboBox)sender).SelectedIndex;
@@ -666,12 +885,8 @@ namespace Multitask
 
         public void resetParams()
         {
-
-        }
-
-        private void gameForm_Load(object sender, EventArgs e)
-        {
             resIdx = 0;
+            currentScore = 0;
             difficulty = 0;
             spawnPeriod_game1 = 0;
             spawnPeriod_game2 = 0;
@@ -690,8 +905,65 @@ namespace Multitask
             d = false;
             ud = false;
             space = false;
+        }
+
+        public void resetGame()
+        {
+            this.Size = new Size(200, 300);
+            this.Paint -= gameForm_Paint;
+            resetParams();
+            disposeForm();
+            loadStartScreen();
+            Invalidate(true);
+        }
+
+        private void gameForm_Load(object sender, EventArgs e)
+        {
+           
 
         }
+
+        public void SerializeScores()
+        {
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+
+            try
+            {
+                using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                {
+                    var formatter = new BinaryFormatter();
+                    formatter.Serialize(stream, (Scores)scores);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occurred: " + ex.Message);
+            }
+        }
+
+        public static Scores DeserializeScores()
+        {
+            Scores ret = null;
+            try
+            {
+                using (FileStream stream = new FileStream(filePath, FileMode.Open))
+                {
+                    if (stream.Length == 0)
+                        return null;
+                    var formatter = new BinaryFormatter();
+                    ret = (Scores)formatter.Deserialize(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occurred: " + ex.Message);
+                return null;
+            }
+
+            return ret;
+        }
+
         /* -------------------END MISC------------------- */
     }
 }
