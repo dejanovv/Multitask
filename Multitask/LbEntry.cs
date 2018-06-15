@@ -27,9 +27,9 @@ namespace Multitask
                 errorProvider1.SetError(tbName, "Name empty!");
                 e.Cancel = true;
             }
-            else if(tbName.Text.Trim().Length >= 21)
+            else if(tbName.Text.Trim().Length >= 11)
             {
-                errorProvider1.SetError(tbName, "Name must be less than 21 characters!");
+                errorProvider1.SetError(tbName, "Name must be less than 11 characters!");
                 e.Cancel = true;
             }
             else

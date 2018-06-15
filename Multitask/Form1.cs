@@ -283,26 +283,34 @@ namespace Multitask
             btnBack.Text = "Main menu";
             btnBack.Click += btnBack_click;
 
+            Label lblScoresNames = new Label();
+            lblScoresNames.Text = "";
+            lblScoresNames.Location = new Point(10, 40);
+            lblScoresNames.Size = new Size(130, 150);
+
             Label lblScores = new Label();
             lblScores.Text = "";
-            lblScores.Location = new Point(10, 40);
-            lblScores.Size = new Size(200, 150);
+            lblScores.Location = new Point(150, 40);
+            lblScores.Size = new Size(130, 150);
 
             var scoresFormatted = scores.Where(x => x != null).OrderByDescending(x => x.Item2)
-                .Select(x => x.Item1 + "                            " + x.Item2 + "\n").ToList();
+                .Select(x => x.Item1 + "$" + x.Item2).ToList();
 
             if (scoresFormatted.Count == 0)
             {
              
-                lblScores.Text = "There aren't any scores yet.\nPlay the game and feel a sense of accomplishment by seeing your name on top of the leaderboard!";
-                lblScores.Location = new Point(50, 40);
-                lblScores.TextAlign = ContentAlignment.TopCenter;
+                lblScoresNames.Text = "There aren't any scores yet.\nPlay the game and feel a sense of accomplishment by seeing your name on top of the leaderboard!";
+                lblScoresNames.Location = new Point(50, 40);
+                lblScoresNames.Size = new Size(200, 100);
+                lblScoresNames.TextAlign = ContentAlignment.TopCenter;                
             }
             else
             {
                 for (int i = 1; i <= Math.Min(scoresFormatted.Count, 10); i++)
                 {
-                    lblScores.Text = lblScores.Text + i + ". " + scoresFormatted[i - 1];
+                    lblScoresNames.Text = lblScoresNames.Text + i + ". " + scoresFormatted[i - 1].Split('$')[0] + "\n";
+                    lblScores.Text = lblScores.Text + scoresFormatted[i - 1].Split('$')[1] + "\n";
+
                 }
             }         
                       
@@ -327,6 +335,7 @@ namespace Multitask
             this.Controls.Add(btnLoadLeaderboardIntermediate);
             this.Controls.Add(btnLoadLeaderboardExpert);
             this.Controls.Add(btnLoadLeaderboardInsane);
+            this.Controls.Add(lblScoresNames);
             this.Controls.Add(lblScores);
             this.Controls.Add(btnClearLeaderboard);
             this.Controls.Add(btnBack);
