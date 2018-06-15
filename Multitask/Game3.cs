@@ -117,7 +117,8 @@ namespace Multitask
             int p = r.Next(1, 11);
             if(p % modus == 0)
             {
-                Rectangle t = new Rectangle(basePosition, playerSize);
+
+                Rectangle t = new Rectangle(new Point(basePosition.X, basePosition.Y - playerSize.Height / 4), new Size(playerSize.Width / 2, playerSize.Height + playerSize.Height / 4));
                 squares.Add(t);
             }
         }

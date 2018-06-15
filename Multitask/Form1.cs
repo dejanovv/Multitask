@@ -322,27 +322,71 @@ namespace Multitask
 
         public void loadHowToScreen()
         {
-            this.Size = new Size(220, 350);
+            this.Size = new Size(300, 400);
             this.MaximizeBox = false;
+
             Label lblTitle = new Label();
             lblTitle.Text = "How To Play";
-            lblTitle.Location = new Point(60, 10);
+            lblTitle.Location = new Point(95, 10);
             lblTitle.Font = new Font("Times New Roman", 10, FontStyle.Bold);
 
-            Label lblHowTo = new Label();
-            lblHowTo.Size = new Size(180, 230);
-            lblHowTo.Text = "The goal is to play the three games simultaneously for as long as possible. If you lose in one, it's game over. You have 10 seconds to get each square in game one using W, S, A, D (to move up, down, left and right respectively). If the timer gets to 0, you lose. In the second game, you use the up and down arrows in order to avoid getting hit by the flying squares. In the third game, you avoid the obstacles coming your way by jumping using space. Choose your difficulty and see how good you are at multitasking!";
-            lblHowTo.Location = new Point(10, 30);
-            lblHowTo.TextAlign = ContentAlignment.MiddleCenter;
+            Label lblHowToGeneral = new Label();
+            lblHowToGeneral.Size = new Size(250, 40);
+            lblHowToGeneral.Text = "The goal is to play the three games simultaneously for as long as possible. If you lose in one, it's game over.";
+            lblHowToGeneral.Location = new Point(20, 30);
+            lblHowToGeneral.TextAlign = ContentAlignment.MiddleLeft;
+
+            Label lblGame1 = new Label();
+            lblGame1.Text = "Game 1:";
+            lblGame1.Location = new Point(20, 80);
+            lblGame1.Font = new Font("Times New Roman", 10);
+            lblGame1.ForeColor = Color.Red;
+
+            Label lblHowToGame1 = new Label();
+            lblHowToGame1.Size = new Size(250, 40);
+            lblHowToGame1.Text = "You have 10 seconds to get each square in game one using W, S, A, D (to move up, down, left and right respectively). If the timer gets to 0, you lose.";
+            lblHowToGame1.Location = new Point(20, 100);
+            lblHowToGame1.TextAlign = ContentAlignment.MiddleLeft;
+
+            Label lblGame2 = new Label();
+            lblGame2.Text = "Game 2:";
+            lblGame2.Location = new Point(20, 150);
+            lblGame2.Font = new Font("Times New Roman", 10);
+            lblGame2.ForeColor = Color.Blue;
+
+            Label lblHowToGame2 = new Label();
+            lblHowToGame2.Size = new Size(250, 40);
+            lblHowToGame2.Text = "In the second game, you use the up and down arrows in order to avoid getting hit by the flying squares.";
+            lblHowToGame2.Location = new Point(20, 170);
+            lblHowToGame2.TextAlign = ContentAlignment.MiddleLeft;
+
+            Label lblGame3 = new Label();
+            lblGame3.Text = "Game 3:";
+            lblGame3.Location = new Point(20, 220);
+            lblGame3.Font = new Font("Times New Roman", 10);
+            lblGame3.ForeColor = Color.Green;
+
+            Label lblHowToGame3 = new Label();
+            lblHowToGame3.Size = new Size(250, 40);
+            lblHowToGame3.Text = "In the third game, you avoid the obstacles coming your way by jumping using space.";
+            lblHowToGame3.Location = new Point(20, 240);
+            lblHowToGame3.TextAlign = ContentAlignment.MiddleLeft;
+
 
             Button btnBack = new Button();
-            btnBack.Location = new Point(65, 260);
+            btnBack.Location = new Point(100, 300);
             btnBack.Size = new Size(75, 25);
             btnBack.Text = "Main menu";
             btnBack.Click += btnBack_click;
 
             this.Controls.Add(lblTitle);
-            this.Controls.Add(lblHowTo);
+            this.Controls.Add(lblHowToGeneral);
+            this.Controls.Add(lblGame1);
+            this.Controls.Add(lblHowToGame1);
+            this.Controls.Add(lblGame2);
+            this.Controls.Add(lblHowToGame2);
+            this.Controls.Add(lblGame3);
+            this.Controls.Add(lblHowToGame3);
             this.Controls.Add(btnBack);
 
             this.DoubleBuffered = true;
