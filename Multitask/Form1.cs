@@ -841,7 +841,7 @@ namespace Multitask
         {
             difficulty = Difficulty.BEGINNER;
             spawnPeriod_game1 = ps_game1[(int)difficulty];
-            spawnPeriod_game2 = ps_game1[(int)difficulty];
+            spawnPeriod_game2 = ps_game1[(int)difficulty] + 1;
             modus_game3 = 5;
             this.disposeForm();
             this.loadGameScreen();
@@ -851,7 +851,7 @@ namespace Multitask
         {
             difficulty = Difficulty.INTERMEDIATE;
             spawnPeriod_game1 = ps_game1[(int)difficulty];
-            spawnPeriod_game2 = ps_game1[(int)difficulty];
+            spawnPeriod_game2 = ps_game1[(int)difficulty] + 1;
             modus_game3 = 4;
             this.disposeForm();
             this.loadGameScreen();
@@ -860,7 +860,7 @@ namespace Multitask
         {
             difficulty = Difficulty.EXPERT;
             spawnPeriod_game1 = ps_game1[(int)difficulty];
-            spawnPeriod_game2 = ps_game1[(int)difficulty];
+            spawnPeriod_game2 = ps_game1[(int)difficulty] + 1;
             modus_game3 = 3;
             this.disposeForm();
             this.loadGameScreen();
@@ -869,7 +869,7 @@ namespace Multitask
         {
             difficulty = Difficulty.INSANE;
             spawnPeriod_game1 = ps_game1[(int)difficulty];
-            spawnPeriod_game2 = ps_game1[(int)difficulty];
+            spawnPeriod_game2 = ps_game1[(int)difficulty] + 1;
             modus_game3 = 2;
             this.disposeForm();
             this.loadGameScreen();
