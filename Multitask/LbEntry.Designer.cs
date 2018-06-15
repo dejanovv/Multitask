@@ -104,7 +104,6 @@
             this.MinimizeBox = false;
             this.Name = "frmScoreEntry";
             this.Text = "HighScore!";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmScoreEntry_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -428,7 +428,7 @@ namespace Multitask
 
             this.Size = sizes[resIdx];
             StatusBar sbGame = new StatusBar();
-            StatusBarPanel lblTime, lblScore, lblTest;
+            StatusBarPanel lblTime, lblScore;//, lblTest;
             lblTime = new StatusBarPanel();
             lblScore = new StatusBarPanel();
             //lblTest = new StatusBarPanel();
