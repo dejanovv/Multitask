@@ -245,7 +245,7 @@ namespace Multitask
             Button btnLoadLeaderboardEasy, btnLoadLeaderboardIntermediate, btnLoadLeaderboardExpert, btnLoadLeaderboardInsane, btnClearLeaderboards, btnClearLeaderboard, btnBack;
 
             btnLoadLeaderboardEasy = new Button();
-            btnLoadLeaderboardEasy.Text = "Easy";
+            btnLoadLeaderboardEasy.Text = "Beginner";
             btnLoadLeaderboardEasy.Location = new Point(10, 10);
             btnLoadLeaderboardEasy.Click += btnLoadLeaderboardEasy_click;
 
@@ -264,12 +264,24 @@ namespace Multitask
             btnLoadLeaderboardInsane.Location = new Point(220, 10);
             btnLoadLeaderboardInsane.Click += btnLoadLeaderboardInsane_click;
 
+            btnClearLeaderboard = new Button();
+            btnClearLeaderboard.Text = "Clear this leaderboard";
+            btnClearLeaderboard.Location = new Point(78, 230);
+            btnClearLeaderboard.Width = 150;
+            btnClearLeaderboard.Click += btnClearLeaderboard_click;
+
 
             btnClearLeaderboards = new Button();
             btnClearLeaderboards.Text = "Clear all leaderboards";
-            btnClearLeaderboards.Location = new Point(85, 200);
+            btnClearLeaderboards.Location = new Point(78, 260);
             btnClearLeaderboards.Width = 150;
             btnClearLeaderboards.Click += btnClearLeaderboards_click;
+
+            btnBack = new Button();
+            btnBack.Location = new Point(78, 290);
+            btnBack.Width = 150;
+            btnBack.Text = "Main menu";
+            btnBack.Click += btnBack_click;
 
             Label lblScores = new Label();
             lblScores.Text = "";
@@ -292,19 +304,23 @@ namespace Multitask
                 {
                     lblScores.Text = lblScores.Text + i + ". " + scoresFormatted[i - 1];
                 }
+            }         
+                      
+            switch (currentLeaderboard)
+            {
+                case 1:
+                    btnLoadLeaderboardEasy.BackColor = Color.LightSlateGray;
+                    break;
+                case 2:
+                    btnLoadLeaderboardIntermediate.BackColor = Color.LightSlateGray;
+                    break;
+                case 3:
+                    btnLoadLeaderboardExpert.BackColor = Color.LightSlateGray;
+                    break;
+                case 4:
+                    btnLoadLeaderboardInsane.BackColor = Color.LightSlateGray;
+                    break;
             }
-
-            btnClearLeaderboard = new Button();
-            btnClearLeaderboard.Text = "Clear this leaderboard";
-            btnClearLeaderboard.Location = new Point(85, 230);
-            btnClearLeaderboard.Width = 150;
-            btnClearLeaderboard.Click += btnClearLeaderboard_click;
-
-            btnBack = new Button();
-            btnBack.Location = new Point(85, 260);
-            btnBack.Width = 150;
-            btnBack.Text = "Main menu";
-            btnBack.Click += btnBack_click;
 
             this.Controls.Add(btnClearLeaderboards);
             this.Controls.Add(btnLoadLeaderboardEasy);
