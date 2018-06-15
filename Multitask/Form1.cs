@@ -322,18 +322,21 @@ namespace Multitask
 
         public void loadHowToScreen()
         {
+            this.Size = new Size(220, 350);
             this.MaximizeBox = false;
             Label lblTitle = new Label();
             lblTitle.Text = "How To Play";
-            lblTitle.Location = new Point(30, 10);
+            lblTitle.Location = new Point(60, 10);
+            lblTitle.Font = new Font("Times New Roman", 10, FontStyle.Bold);
 
             Label lblHowTo = new Label();
-            lblHowTo.Size = new Size(150, 180);
-            lblHowTo.Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pulvinar blandit gravida. Vivamus imperdiet eros odio, vitae ultricies dui efficitur vitae. Phasellus in ex lacus. Nunc rutrum hendrerit arcu ut euismod. Suspendisse non nibh tellus. In a quam viverra, vulputate lectus id, aliquet odio. Ut laoreet dignissim eleifend.";
+            lblHowTo.Size = new Size(180, 230);
+            lblHowTo.Text = "The goal is to play the three games simultaneously for as long as possible. If you lose in one, it's game over. You have 10 seconds to get each square in game one using the keyboard arrows. If the timer gets to 0, you lose. In the second game, you use the W and S keys to move up and down respectively in order to avoid getting hit by the flying squares. In the third game, you avoid the obstacles coming your way by jumping using space. Choose your difficulty and see how good you are at multitasking!";
             lblHowTo.Location = new Point(10, 30);
+            lblHowTo.TextAlign = ContentAlignment.MiddleCenter;
 
             Button btnBack = new Button();
-            btnBack.Location = new Point(55, 220);
+            btnBack.Location = new Point(65, 260);
             btnBack.Size = new Size(75, 25);
             btnBack.Text = "Main menu";
             btnBack.Click += btnBack_click;

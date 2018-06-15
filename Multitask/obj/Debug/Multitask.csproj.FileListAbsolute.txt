@@ -12,7 +12,6 @@ E:\FINKI\Multitask\Multitask\Multitask\bin\Debug\Multitask.exe.config
 E:\FINKI\Multitask\Multitask\Multitask\bin\Debug\Multitask.exe
 E:\FINKI\Multitask\Multitask\Multitask\bin\Debug\Multitask.pdb
 E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.csprojResolveAssemblyReference.cache
-E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.gameForm.resources
 E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.Properties.Resources.resources
 E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.csproj.GenerateResource.cache
 E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.csproj.CoreCompileInputs.cache
@@ -29,3 +28,5 @@ D:\Programiranje\Fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.e
 D:\Programiranje\Fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.pdb
 D:\Programiranje\Fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.Scores.resources
 D:\Programiranje\Fakultet\VP\Multitask\Multitask\Multitask\obj\Debug\Multitask.frmScoreEntry.resources
+E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.Scores.resources
+E:\FINKI\Multitask\Multitask\Multitask\obj\Debug\Multitask.frmScoreEntry.resources
