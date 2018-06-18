@@ -764,10 +764,10 @@ namespace Multitask
             }
             timeTicks++;
             int seconds = (timeTicks * 15) / 1000;
-            int[] time_data = new int[] { (seconds/60)/10, (seconds/60)%10, seconds / 10, seconds % 10 };
-
             currentScore = 200 * seconds;
-            (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[0]) as StatusBarPanel).Text = String.Format("{0}{1}:{2}{3}", time_data.Select(x => x.ToString()).ToArray());
+
+            var timespan = TimeSpan.FromSeconds(seconds);
+            (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[0]) as StatusBarPanel).Text = timespan.ToString(@"mm\:ss");
             (((this.Controls.Find("sbGame", true).ElementAt(0) as StatusBar).Panels[1]) as StatusBarPanel).Text = String.Format("Score: {0}", ((Int32)currentScore).ToString());
 
             if (game1 != null)
