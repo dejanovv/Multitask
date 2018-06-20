@@ -27,5 +27,26 @@
 
 Во текот на играта, во долниот лев агол може да видите колку време играте и вашиот скор. 
 
-![alt text](https://github.com/dejanovv/Multitask/blob/master/Multitask/game.PNG?raw=true)
+## Имплементација
+
+Апликацијата е имплементирана со користење на 5 класи, основната класа за иницијализирање на формата GameForm, Scores класата за сериализација на скоровите и по една класа за секоја од игрите. Класата Scores е serializable, во неа се чуваат само 4 листи од tuples<string, int> за скоровите од секое ниво на тежина (beginner, intermediate, expert, insane). Инстанцата од оваа класа ја сериализираме со функциите SerializeScores() и DeserializeScores() во кои користиме FileStream од фајлот (filePath e дефинирана како статички string во GameForm класата) i binary formatter.
+
+![alt text](https://github.com/dejanovv/Multitask/blob/master/Multitask/serializeScores.PNG?raw=true)
+![alt text](https://github.com/dejanovv/Multitask/blob/master/Multitask/deserializeScores.PNG?raw=true)
+
+Во GameForm класата покрај објекти од класите за игрите, Rectangle play areas и booleans за копчињатачуваме и податоци за имплементација на различните difficulty levels во игрите. 
+
+![alt text](https://github.com/dejanovv/Multitask/blob/master/Multitask/spawnRates.PNG?raw=true)
+
+Овие податоци ги користиме за да дефинираме колку често ќе се појавуваат квадратчињата во секоја игра соодветно односно spawn periods.
+
+![alt text](https://github.com/dejanovv/Multitask/blob/master/Multitask/gamesParams.PNG?raw=true)
+
+За првата и втората игра, spawn period се избира според избраната тежина (енумерација Difficulty каде BEGINNER=0) која се користи како индекс во низата ps_game1, при што на втората и додаваме +1 за да не бидат синхронизирани. Вредноста во низата на овој индекс се користи со мод со тајмерот, на пример ако Difficulty e BEGINNER, вредноста ќе биде 4, и ќе се повикува методот spawn (метод за исцртување на квадратче кое треба да се собере/избегне) секогаш кога вредноста на тајмерот мод 4 == 0, односно на секои четири секунди. Низата ps_game1 е опаѓачка, односно за секое потешко ниво spawn period ќе биде една секунда помал. modus_game3 се користи за рандомизација на препреките во третата игра. 
+
+![alt text](https://github.com/dejanovv/Multitask/blob/master/Multitask/spawnGame3.PNG?raw=true)
+
+Секоја секунда се повикува spawn функцијата за третата игра, која генерира рандом број од 1 до 10 и доколку тој број има остаток нула при делење со modus_game3 се генерира нова пречка. modus_game3 е 5 за BEGINNER до 2 за INSANE, бидејќи колку е бројот поголем, толку помала е веројатноста дека е делител на рандом генерираниот број, па за полесните нивоа ќе се генерираат помалку пречки отколку за потешките.
+
+
 
