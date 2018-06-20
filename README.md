@@ -34,7 +34,7 @@
 ![alt text](https://github.com/dejanovv/Multitask/blob/master/Multitask/serializeScores.PNG?raw=true)
 ![alt text](https://github.com/dejanovv/Multitask/blob/master/Multitask/deserializeScores.PNG?raw=true)
 
-Во GameForm класата покрај објекти од класите за игрите, Rectangle play areas и booleans за копчињатачуваме и податоци за имплементација на различните difficulty levels во игрите. 
+Во GameForm класата покрај објекти од класите за игрите, Rectangle play areas и booleans за копчињата чуваме и податоци за имплементација на различните difficulty levels во игрите. 
 
 ![alt text](https://github.com/dejanovv/Multitask/blob/master/Multitask/spawnRates.PNG?raw=true)
 
